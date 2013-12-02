@@ -3,3 +3,7 @@ This is the repository for leetcode.
 Naming rule: removing spaces from problem title.
 
 Problem Set: http://oj.leetcode.com/problems/
+
+Notes:
+1. In the test case, there is no memory recall.
+2. Some of the solution may not be the optimal.
