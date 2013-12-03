@@ -1,6 +1,6 @@
 This is the repository for leetcode.
 
-Naming rule: removing spaces from problem title.
+Naming rule: removing spaces and illegal characters (e.g. "'" ) from problem title.
 
 Problem Set: http://oj.leetcode.com/problems/
 
