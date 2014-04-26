@@ -8,23 +8,34 @@ using namespace std;
 class Solution {
 public:
     int numDecodings(string s) {
-        vector<int> v(s.size(), 0);
-        int i, r;
-        v[s.size() - 1] = 1;
+        if (s == "") return 0;
+        vector<int> v(s.size() + 1);
+        v[s.size()] = 1;
+        if (s[s.size() - 1] == '0')
+        {
+            v[s.size() - 1] = 0;
+        }
+        else
+        {
+            v[s.size() - 1] = 1;
+        }
+        int i = 0, lasttwo;
         for (i = s.size() - 2; i >= 0; --i)
         {
-            if (s[i] == '0') v[i] = v[i + 1];
-            else
+            lasttwo = (s[i] - '0') * 10 + (s[i + 1] - '0');
+            if (s[i] == '0')
             {
-                if (s[i] == '1' || s[i] == '2')
-                {
-                    int n = (s[i] - '0') * 10 + (s[i + 1] - '0');
-                    if (s[i + 1] == '0') v[i] = v[i + 1];
-                    else if (n > 0 && n <= 26) v[i] = v[i + 1] + v[i + 2];
-                }
-                else v[i] = v[i + 1];
+                v[i] = 0;
+                continue;
             }
+            if ((lasttwo > 10 && lasttwo < 20) || (lasttwo > 20 && lasttwo < 27))
+                v[i] = v[i + 1] + v[i + 2];
+            else if (lasttwo == 10 || lasttwo == 20)
+                v[i] = v[i + 2];
+            else
+                v[i] = v[i + 1];
         }
+        
         return v[0];
     }
 };
@@ -48,8 +59,6 @@ int main()
     cout<<str<<":"<<s.numDecodings(str)<<":"<<numDecodings(str)<<endl;
     return 0;
 }
-
-
 
 //////////////////////////////////////////////
 int numDecodings(string s) {
