@@ -10,25 +10,24 @@ public:
         int maxrow, maxcol;
         maxrow = matrix.size() - 1;
         maxcol = matrix[0].size() - 1;
+        if (target < matrix[0][0]) return false;
         int left, right, mid;
         left = 0; right = maxrow;
         while(left <= right)
         {
             mid = (left + right) / 2;
             if (target == matrix[mid][0]) return true;
-            if (target < matrix[mid][0]) right = mid;
-            else left = mid;
-            if (left == mid && target < matrix[mid + 1][0]) break;
+            if (target < matrix[mid][0]) right = mid - 1;
+            else left = mid + 1;
         }
-        int rowindex = mid;
+        int rowindex = right; // IMPORTANT!
         left = 0; right = maxcol;
-        while(left < right)
+        while(left <= right)
         {
             mid = (left + right) / 2;
             if (target == matrix[rowindex][mid]) return true;
-            if (target < matrix[rowindex][mid]) right = mid;
-            else left = mid;
-            if (left == mid && target < matrix[rowindex][mid + 1]) break;
+            if (target < matrix[rowindex][mid]) right = mid - 1;
+            else left = mid + 1;
         }
         return false;
     }
@@ -51,6 +50,10 @@ int main()
     t = 3;
     cout<<t<<":"<<s.searchMatrix(m, t)<<endl;
     t = 30;
+    cout<<t<<":"<<s.searchMatrix(m, t)<<endl;
+    t = 11;
+    cout<<t<<":"<<s.searchMatrix(m, t)<<endl;
+    t = 78;
     cout<<t<<":"<<s.searchMatrix(m, t)<<endl;
     return 0;
 }

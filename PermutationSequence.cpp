@@ -39,5 +39,6 @@ int main()
     cout<<s.getPermutation(3, 3)<<endl;
     cout<<s.getPermutation(3, 4)<<endl;
     cout<<s.getPermutation(3, 5)<<endl;
-    cout<<s.getPermutation(8, 4)<<endl;
+    cout<<s.getPermutation(3, 6)<<endl;
+    cout<<s.getPermutation(9, 306490)<<endl;
 }
