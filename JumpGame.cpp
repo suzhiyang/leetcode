@@ -7,15 +7,12 @@ class Solution {
 public:
     bool canJump(int A[], int n) {
         vector<int> v(n, 0);
-        v[0] = 0;
         int i, j;
         for(i = 1; i < n; ++i)
         {
             v[i] = max(v[i - 1], A[i - 1]) - 1;
-            cout<<v[i]<<" ";
-//            if (v[i] < 0) return false;
+            if (v[i] < 0) return false;
         }
-        cout<<endl;
         return true;
     }
 };

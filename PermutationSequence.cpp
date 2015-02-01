@@ -11,8 +11,17 @@ using namespace std;
  */
 class Solution {
 public:
+    int f[10];
+    void fact()
+    {
+        f[1] = 1;
+        for(int i = 2; i < 10; ++i)
+            f[i] = f[i - 1] * i;
+    }
     string getPermutation(int n, int k) {
         if (n == 1) return string("1");
+        fact();
+        k = (k - 1) % f[n];
         string str;
         int i, j;
         for(i = 1; i <= n; ++i) str = str + (char)(i + '0');
@@ -34,11 +43,21 @@ public:
 int main()
 {
     Solution s;
+    cout<<s.getPermutation(2, 1)<<endl;
     cout<<s.getPermutation(3, 1)<<endl;
     cout<<s.getPermutation(3, 2)<<endl;
     cout<<s.getPermutation(3, 3)<<endl;
     cout<<s.getPermutation(3, 4)<<endl;
     cout<<s.getPermutation(3, 5)<<endl;
     cout<<s.getPermutation(3, 6)<<endl;
+    cout<<endl;
+    cout<<s.getPermutation(4, 1)<<endl;
+    cout<<s.getPermutation(4, 2)<<endl;
+    cout<<s.getPermutation(4, 3)<<endl;
+    cout<<s.getPermutation(4, 4)<<endl;
+    cout<<s.getPermutation(4, 5)<<endl;
+    cout<<s.getPermutation(4, 6)<<endl;
+    cout<<s.getPermutation(4, 7)<<endl;
     cout<<s.getPermutation(9, 306490)<<endl;
+    cout<<s.getPermutation(9, 353955)<<endl;
 }

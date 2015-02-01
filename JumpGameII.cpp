@@ -16,7 +16,7 @@ public:
 //            if (v[i] < 0) return false;
         }
         cout<<endl;
-        return true;
+        return v[n - 1];
     }
 };
 
@@ -25,6 +25,6 @@ int main()
     int a[] = {2,3,1,1,4};
     int b[] = {3,2,1,0,4};
     Solution s;
-    cout<<s.canJump(a, 5)<<endl;
-    cout<<s.canJump(b, 5)<<endl;
+    cout<<s.jump(a, 5)<<endl;
+    cout<<s.jump(b, 5)<<endl;
 }
