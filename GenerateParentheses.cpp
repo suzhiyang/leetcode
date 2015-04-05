@@ -5,34 +5,33 @@
 using namespace std;
 
 class Solution {
+private:
+    vector<string> m_r;
 public:
     vector<string> generateParenthesis(int n) {
-        vector<string> r;
-        if (n == 1)
+        string s;
+        generate(n, n, s);
+        return m_r;
+    }
+
+    void generate(int l, int r, string &s)
+    {
+        if (l == 0 && r == 0)
         {
-            r.push_back("()");
-            return r;
+            m_r.push_back(s);
+            return;
         }
-        else if (n == 2)
+        string s1, s2;
+        if (l > 0)
         {
-            vector<string> r;
-            r.push_back("(())");
-            r.push_back("()()");
-            return r;
+            s1 = s + '(';
+            generate(l - 1, r, s1);
         }
-        r = generateParenthesis(n - 1);
-        r.reserve(r.size() * 3);
-        vector<string> v;
-        int i;
-        for(i = 0; i < r.size(); ++i)
+        if (r > l)
         {
-            string lstr = "()" + r[i], rstr = r[i] + "()";
-            r[i] = "(" + r[i] + ")";
-            v.push_back(lstr);
-            if (lstr != rstr) v.push_back(rstr);
+            s2 = s + ')';
+            generate(l, r - 1, s2);
         }
-        r.insert(r.end(), v.begin(), v.end());
-        return r;
     }
 };
 
@@ -40,7 +39,7 @@ int main()
 {
     Solution s;
     vector<string> r;
-    r = s.generateParenthesis(3);
+    r = s.generateParenthesis(4);
     int i;
     for(i = 0; i < r.size(); ++i)
         cout<<"\""<<r[i]<<"\",";

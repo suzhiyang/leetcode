@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <string>
 #include <algorithm>
 
 using namespace std;
@@ -40,24 +41,60 @@ public:
     }
 };
 
+void dfs(vector<string> &r, string &cur, int index, int n)
+{
+    if (index == n)
+    {
+        r.push_back(cur);
+        return;
+    }
+    int i, j;
+    for (i = 1; i <= n; ++i)
+    {
+        bool exist = false;
+        for (j = 0; j < cur.size(); ++j)
+            if (cur[j] - '0' == i) {exist = true; break;}
+        if (exist == false)
+        {
+            string next = cur + (char)(i + '0');
+            dfs(r, next, index + 1, n);
+        }
+    }
+}
+
+void permutation(int n)
+{
+    vector<string> r;
+    string cur;
+    dfs(r, cur, 0, n);
+    int i;
+    cout<<r.size()<<endl;
+    for (i = 0; i < r.size(); ++i)
+    {
+        cout<<r[i]<<endl;
+    }
+}
+
 int main()
 {
     Solution s;
-    cout<<s.getPermutation(2, 1)<<endl;
-    cout<<s.getPermutation(3, 1)<<endl;
-    cout<<s.getPermutation(3, 2)<<endl;
-    cout<<s.getPermutation(3, 3)<<endl;
-    cout<<s.getPermutation(3, 4)<<endl;
-    cout<<s.getPermutation(3, 5)<<endl;
-    cout<<s.getPermutation(3, 6)<<endl;
-    cout<<endl;
-    cout<<s.getPermutation(4, 1)<<endl;
-    cout<<s.getPermutation(4, 2)<<endl;
-    cout<<s.getPermutation(4, 3)<<endl;
-    cout<<s.getPermutation(4, 4)<<endl;
-    cout<<s.getPermutation(4, 5)<<endl;
-    cout<<s.getPermutation(4, 6)<<endl;
-    cout<<s.getPermutation(4, 7)<<endl;
-    cout<<s.getPermutation(9, 306490)<<endl;
-    cout<<s.getPermutation(9, 353955)<<endl;
+//     cout<<s.getPermutation(2, 1)<<endl;
+//     cout<<s.getPermutation(3, 1)<<endl;
+//     cout<<s.getPermutation(3, 2)<<endl;
+//     cout<<s.getPermutation(3, 3)<<endl;
+//     cout<<s.getPermutation(3, 4)<<endl;
+//     cout<<s.getPermutation(3, 5)<<endl;
+//     cout<<s.getPermutation(3, 6)<<endl;
+//     cout<<endl;
+//     cout<<s.getPermutation(4, 1)<<endl;
+//     cout<<s.getPermutation(4, 2)<<endl;
+//     cout<<s.getPermutation(4, 3)<<endl;
+//     cout<<s.getPermutation(4, 4)<<endl;
+//     cout<<s.getPermutation(4, 5)<<endl;
+//     cout<<s.getPermutation(4, 6)<<endl;
+//     cout<<s.getPermutation(4, 7)<<endl;
+//     cout<<s.getPermutation(9, 306490)<<endl;
+//     cout<<s.getPermutation(9, 353955)<<endl;
+    permutation(3);
+    permutation(4);
 }

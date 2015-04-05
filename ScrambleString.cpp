@@ -1,25 +1,20 @@
-#include <iostream>
-#include <string>
-
-using namespace std;
-
 class Solution {
 public:
     bool isScramble(string s1, string s2) {
-        sort(s1.begin(), s1.end());
-        sort(s2.begin(), s2.end());
-        for (int i = 0; i < s1.size(); ++i)
-            if (s1[i] != s2[i]) return false;
-        return true;
+        int h[26], i, s = s1.size();
+        memset(h, 0, 26 * sizeof(int));
+        for (i = 0; i < s1.size(); ++i)
+        {
+            ++h[s1[i] - 'a'];
+            --h[s2[i] - 'a'];
+        }
+        for (i = 0; i < 26; ++i)
+            if (h[i] != 0) return false;
+        if (s1.size() == 1 && s2.size() == 1) return true;
+        for (i = 1; i < s1.size(); ++i)
+        {
+            if ((isScramble(s1.substr(0, i), s2.substr(0, i)) && isScramble(s1.substr(i), s2.substr(i))) || (isScramble(s1.substr(0, i), s2.substr(s - i)) && isScramble(s1.substr(i), s2.substr(0, s - i)))) return true;
+        }
+        return false;
     }
 };
-
-int main()
-{
-    string s1, s2;
-    Solution s;
-    s1 = "great";
-    s2 = "reatg";
-    cout<<s1<<":"<<s2<<":"<<s.isScramble(s1, s2)<<endl;
-    return 0;
-}
