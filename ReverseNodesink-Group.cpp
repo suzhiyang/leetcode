@@ -1,105 +1,55 @@
 #include <iostream>
+#include "ds.h"
 
 using namespace std;
 
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
-};
-
-void printlist(ListNode *head)
-{
-    while(head != NULL)
-    {
-        cout<<head->val<<",";
-        head = head->next;
-    }
-    cout<<endl;
-}
-
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
 class Solution {
 public:
-    ListNode *reverseKGroup(ListNode *head, int k) {
+    ListNode* reverseKGroup(ListNode* head, int k) {
         if (head == NULL) return head;
-        ListNode *tail, *newhead, *pnext, *pretail;
-        bool islast;
-        pnext = head;
-        pretail = NULL;
-        while(pnext != NULL)
+        ListNode dummy(0);
+        dummy.next = head;
+        ListNode *prev = &dummy, *nt = head, *p = head, *tmp;
+        int i;
+        while (p != NULL)
         {
-            tail = pnext;
-            newhead = reversek(tail, k, &pnext);
-            if (pretail == NULL) head = newhead;
-            else pretail->next = newhead;
-            pretail = tail;
+            for (i = 0; p != NULL && i < k; ++i)
+            {
+                if (i == 0) nt = p;
+                tmp = p->next;
+                p->next = prev->next;
+                prev->next = p;
+                p = tmp;
+            }
+            nt->next = p;
+            if (i < k) break;
+            prev = nt;
         }
-        return head;
-    }
-
-    ListNode *reversek(ListNode *head, int k, ListNode **pnext)
-    {
-        ListNode *newhead = NULL, *p = head, *t;
-        int i = 0;
-        while(p != NULL)
+        if (i < k)
         {
-            t = p->next;
-            if (newhead == NULL)
+            p = prev->next;
+            prev->next = NULL;
+            while (p != NULL)
             {
-                newhead = p;
-                p->next = NULL;
+                tmp = p->next;
+                p->next = prev->next;
+                prev->next = p;
+                p = tmp;
             }
-            else
-            {
-                p->next = newhead;
-                newhead = p;
-            }
-            p = t;
-            ++i;
-            if (i >= k) break;
         }
-        *pnext = p;
-        if (i < k) newhead = reversek(newhead, i, pnext);
-        return newhead;
+        return dummy.next;
     }
 };
 
 int main()
 {
+    ListNode *h = new ListNode(1);
+    h->next = new ListNode(2);
+    h->next->next = new ListNode(3);
+    h->next->next->next = new ListNode(4);
+    h->next->next->next->next = new ListNode(5);
+    printlist(h);
     Solution s;
-    ListNode *l[10];
-    l[0] = new ListNode(1);
-    l[1] = new ListNode(2);
-    l[2] = new ListNode(3);
-    l[3] = new ListNode(4);
-    l[4] = new ListNode(5);
-    l[5] = new ListNode(6);
-    l[6] = new ListNode(7);
-    l[7] = new ListNode(8);
-    l[0]->next = l[1];
-    l[1]->next = l[2];
-    l[2]->next = l[3];
-    l[3]->next = l[4];
-    l[4]->next = l[5];
-    l[5]->next = l[6];
-    l[6]->next = l[7];
-            
-    printlist(l[0]);
-//    ListNode *pnext;
-//     l[0] = s.reversek(l[0], 3, &pnext);
-//     printlist(l[0]);
-//     printlist(pnext);
-    l[0] = s.reverseKGroup(l[0], 3);
-    printlist(l[0]);
-    l[0] = s.reverseKGroup(l[0], 2);
-    printlist(l[0]);
+    h = s.reverseKGroup(h, 3);
+    printlist(h);
 }
-

@@ -1,147 +1,167 @@
-#include <iostream>
 #include <vector>
+#include <iostream>
 #include <queue>
-
 using namespace std;
 
-template <typename T>
-void printmatrix(vector<vector<T> > &m)
-{
-    int i, j;
-    for(i = 0; i < m.size(); ++i)
-    {
-        for(j = 0; j < m[0].size(); ++j)
-            cout<<m[i][j]<<" ";
-        cout<<endl;
-    }
-    cout<<endl;
-}
+int dir[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
 class Solution {
 public:
-    void solve(vector<vector<char> > &board) {
-        if (board.size() < 1) return;
-        int i, j;
-        int row = board.size(), col = board[0].size();
-        // Obtain the region starts from edge grid: not satisfied
-        for(i = 0; i < row; ++i)
+    void bfs(vector<vector<char> > &board, int x, int y)
+    {
+        queue<pair<int, int> > q;
+        board[x][y] = 'V';
+        q.push(make_pair(x, y));
+        while(!q.empty())
         {
-            bfs(board, i, 0);
-            bfs(board, i, col - 1);
-        }
-        for(j = 0; j < col; ++j)
-        {
-            bfs(board, 0, j);
-            bfs(board, row - 1, j);
-        }
-        // Obtain the surrounded region: m_board[x][y] == 'O'
-        for(i = 0; i < row; ++i)
-        {
-            for(j = 0; j < col; ++j)
+            pair<int, int> e = q.front();
+            q.pop();
+            for (int k = 0; k < 4; ++k)
             {
-                if (board[i][j] == 'O') board[i][j] = 'X';
-                else if (board[i][j] == 'v') board[i][j] = 'O';
+                int dx = e.first + dir[k][0], dy = e.second + dir[k][1];
+                if (dx >= 0 && dx < board.size() && dy >= 0 && dy < board[0].size() &&
+                    board[dx][dy] == 'O')
+                {
+                    board[dx][dy] = 'V';
+                    q.push(make_pair(dx, dy));
+                }
             }
         }
     }
-
-    void bfs(vector<vector<char> > &m, int x, int y)
-    {
-        if (m[x][y] != 'O') return;
-        int row = m.size(), col = m[0].size();
-        queue<int> q;
-        q.push(x * col + y);
-        while(!q.empty())
+    
+    void solve(vector<vector<char> >& board) {
+        if (board.size() <= 2) return;
+        int m = board.size(), n = board[0].size(), i, j;
+        for (i = 0; i < m; ++i)
         {
-            int t = q.front();
-            q.pop();
-            int cx = t / col, cy = t % col;
-            m[cx][cy] = 'v';
-            if (cx + 1 < row && m[cx + 1][cy] == 'O')
-            {
-                m[cx + 1][cy] = 'v';
-                q.push((cx + 1) * col + cy);
-            }
-            if (cx - 1 >= 0 && m[cx - 1][cy] == 'O')
-            {
-                m[cx - 1][cy] = 'v';
-                q.push((cx - 1) * col + cy);
-            }
-            if (cy + 1 < col && m[cx][cy + 1] == 'O')
-            {
-                m[cx][cy + 1] = 'v';
-                q.push(cx * col + cy + 1);
-            }
-            if (cy - 1 >= 0 && m[cx][cy - 1] == 'O')
-            {
-                m[cx][cy - 1] = 'v';
-                q.push(cx * col + cy - 1);
-            }
+            if (board[i][0] == 'O') bfs(board, i, 0);
+            if (board[i][n - 1] == 'O') bfs(board, i, n - 1);
+        }
+        for (j = 0; j < n; ++j)
+        {
+            if (board[0][j] == 'O') bfs(board, 0, j);
+            if (board[m - 1][j] == 'O') bfs(board, m - 1, j);
+        }
+        for (i = 0; i < m; ++i)
+        {
+            for (j = 0; j < n; ++j)
+                if (board[i][j] == 'O') board[i][j] = 'X';
+                else if (board[i][j] == 'V') board[i][j] = 'O';
         }
     }
 };
-
-// ******** DFS IMPLEMENTATION
 // class Solution {
-// private:
-//     vector<vector<char> > m_board;
 // public:
-//     void solve(vector<vector<char> > &board) {
-//         if (board.size() < 1) return;
-//         m_board = board;
-//         int i, j;
-//         int row = board.size(), col = board[0].size();
-//         // Obtain the region starts from edge grid: not satisfied
-//         for(i = 0; i < row; ++i)
+//     void solve(vector<vector<char> >& board) {
+//         if (board.size() <= 2) return;
+//         int m = board.size(), n = board[0].size();
+//         queue<pair<int, int> > q;
+//         int i, j, k;
+//         for (i = 1; i < m - 1; ++i)
 //         {
-//             dfs(i, 0);
-//             dfs(i, col - 1);
-//         }
-//         for(j = 0; j < col; ++j)
-//         {
-//             dfs(0, j);
-//             dfs(row - 1, j);
-//         }
-//         // Obtain the surrounded region: m_board[x][y] == 'O'
-//         for(i = 0; i < row; ++i)
-//         {
-//             for(j = 0; j < col; ++j)
+//             for (j = 1; j < n - 1; ++j)
 //             {
-//                 if (m_board[i][j] == 'O') board[i][j] = 'X';
-//                 else if (m_board[i][j] == 'd') board[i][j] = 'O';
+//                 if (board[i][j] == 'O')
+//                 {
+//                     bool flag = true;
+//                     vector<pair<int, int> > v;
+//                     q.push(make_pair(i, j));
+//                     board[i][j] = 'V';
+//                     while(!q.empty())
+//                     {
+//                         pair<int, int> pt = q.front();
+//                         q.pop();
+//                         v.push_back(pt);
+//                         for (k = 0; k < 4; ++k)
+//                         {
+//                             int x = pt.first + dir[k][0], y = pt.second + dir[k][1];
+//                             if (x > 0 && x < m - 1 && y > 0 && y < n - 1)
+//                             {
+//                                 if (board[x][y] == 'O')
+//                                 {
+//                                     board[x][y] = 'V';
+//                                     q.push(make_pair(x, y));
+//                                 }
+//                             }
+//                             else if (board[x][y] == 'O') flag = false;
+//                         }
+//                     }
+//                     if (!flag)
+//                         for (auto t : v)
+//                         {
+//                             board[t.first][t.second] = 'I';
+//                         }
+//                 }
 //             }
 //         }
+//         // for (i = 0; i < m; ++i)
+//         // {
+//         //     for (j = 0; j < n; ++j)
+//         //         cout<<board[i][j];
+//         //     cout<<endl;
+//         // }
+//         for (i = 1; i < m - 1; ++i)
+//         {
+//             for (j = 1; j < n - 1; ++j)
+//                 if (board[i][j] == 'V') board[i][j] = 'X';
+//                 else if (board[i][j] == 'I') board[i][j] = 'O';
+//         }
 //     }
+// };
 
-//     void dfs(int x, int y)
+// class Solution {
+// public:
+//     bool dfs(vector<vector<char> > &board, int x, int y)
 //     {
-//         if (m_board[x][y] == 'X' || m_board[x][y] == 'd') return;
-//         int row = m_board.size(), col = m_board[0].size();
-//         m_board[x][y] = 'd';
-//         if (x + 1 < row) dfs(x + 1, y);
-//         if (x - 1 >= 0) dfs(x - 1, y);
-//         if (y + 1 < col) dfs(x, y + 1);
-//         if (y - 1 >= 0) dfs(x, y - 1);
+//         if (board[x][y] == 'X') return true;
+//         if (x == 0 || x == board.size() - 1 || y == 0 || y == board[0].size() - 1)
+//             return false;
+//         board[x][y] = 'V';
+//         bool flag = true;
+//         if (board[x + 1][y] == 'O') flag = flag && dfs(board, x + 1, y);
+//         if (board[x - 1][y] == 'O') flag = flag && dfs(board, x - 1, y);
+//         if (board[x][y + 1] == 'O') flag = flag && dfs(board, x, y + 1);
+//         if (board[x][y - 1] == 'O') flag = flag && dfs(board, x, y - 1);
+//         if (flag) board[x][y] = 'X';
+//         return flag;
+//     }
+    
+//     void solve(vector<vector<char> >& board) {
+//         int i, j;
+//         if (board.size() <= 2) return;
+//         for (i = 0; i < board.size(); ++i)
+//         {
+//             for (j = 0; j < board[0].size(); ++j)
+//                 if (board[i][j] == 'O' && dfs(board, i, j)) board[i][j] = 'X';
+//         }
+//         for (i = 0; i < board.size(); ++i)
+//             for (j = 0; j < board[0].size(); ++j)
+//                 if (board[i][j] == 'V') board[i][j] = 'O';
 //     }
 // };
 
 int main()
 {
-    char *a[20] = {"XXXXXXXXXXXXXXXXXXXX",
-                   "XOOXOOOOOOOOOOOOXXXX",
-                   "XXOXOXOXOXOXXXXXOOOO",
-                   "OOXXXXXOXXXXXXXXXXOO"};
-//     char *a[20] = 
-//     {"XOOOOOOOOOOOOOOOOOOO","OXOOOOXOOOOOOOOOOOXX","OOOOOOOOXOOOOOOOOOOX","OOXOOOOOOOOOOOOOOOXO","OOOOOXOOOOXOOOOOXOOX","XOOOXOOOOOXOXOXOXOXO","OOOOXOOXOOOOOXOOXOOO","XOOOXXXOXOOOOXXOXOOO","OOOOOXXXXOOOOXOOXOOO","XOOOOXOOOOOOXXOOXOOX","OOOOOOOOOOXOOXOOOXOX","OOOOXOXOOXXOOOOOXOOO","XXOOOOOXOOOOOOOOOOOO","OXOXOOOXOXOOOXOXOXOO","OOXOOOOOOOXOOOOOXOXO","XXOOOOOOOOXOXXOOOXOO","OOXOOOOOOOXOOXOXOXOO","OOOXOOOOOXXXOOXOOOXO","OOOOOOOOOOOOOOOOOOOO","XOOOOXOOOXXOOXOXOXOO"
-//    };
-    vector<vector<char> > board(4, vector<char>(20));
-    int i, j;
+    int i, j, n;
+    n = 5;
+    char a[][10] = {"OXXOX",
+                    "XOOXO",
+                    "XOXOX",
+                    "OXOOO",
+                    "XXOXO"};
+    vector<vector<char> > v(n);
+    for (i = 0; i < n; ++i)
+        v[i].assign(a[i], a[i] + n);
+    // char a[][10] = {"OOO", "OOO", "OOO"};
+    // vector<vector<char> > v(3);
+    // for (i = 0; i < 3; ++i)
+    //     v[i].assign(a[i], a[i] + 3);
     Solution s;
-    for(i = 0; i < board.size(); ++i)
+    s.solve(v);
+    for (i = 0; i < n; ++i)
     {
-        board[i].assign(a[i], a[i] + board[0].size());
+        for (j = 0; j < n; ++j)
+            cout<<v[i][j];
+        cout<<endl;
     }
-    printmatrix(board);
-    s.solve(board);
-    printmatrix(board);
 }

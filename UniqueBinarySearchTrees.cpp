@@ -1,27 +1,13 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
     int numTrees(int n) {
-        if (n < 2) return 1;
-        vector<int> c(n + 1, 0);
-        int i, j;
-        c[0] = 1;
-        c[1] = 1;
-        for(i = 2; i <= n; ++i)
+        int dp[1000] = {0}, i, j;
+        dp[0] = 1; dp[1] = 1; dp[2] = 2;
+        for (i = 3; i <= n; ++i)
         {
-            for(j = 0; j < i; ++j)
-            {
-                c[i] += c[j] * c[i - j - 1];
-            }
+            for (j = 1; j <= i; ++j)
+                dp[i] += dp[j - 1] * dp[i - j];
         }
-        return c[n];
+        return dp[n];
     }
 };
-
-int main()
-{
-}

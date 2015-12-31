@@ -1,46 +1,27 @@
-#include <vector>
-#include <iostream>
-
-using namespace std;
-
 class Solution {
 public:
     vector<vector<int> > generateMatrix(int n) {
-        vector<vector<int> > r(n, vector<int>(n, 0));
-        if (n == 0) return r;
-        int i, j;
-        int r1 = 0, r2 = n - 1, c1 = 0, c2 = n - 1, count = 0;
-        while(r1 <= r2 && c1 <= c2)
+        int i, j, c = 1;
+        int l = 0, r = n - 1, t = 0, b = n - 1;
+        vector<vector<int> > m(n, vector<int>(n, 0));
+        while(c <= n * n)
         {
-            for(j = c1; j <= c2; ++j)
-                r[r1][j] = ++count;
-            for(i = r1 + 1; i <= r2; ++i)
-                r[i][c2] = ++count;
-            if (r1 != r2)
+            for (j = l; j <= r; ++j)
+                m[t][j] = c++;
+            for (i = t + 1; i <= b; ++i)
+                m[i][r] = c++;
+            if (t < b)
             {
-                for(j = c2 - 1; j >= c1; --j)
-                    r[r2][j] = ++count;
+                for (j = r - 1; j >= l; --j)
+                    m[b][j] = c++;
             }
-            if (c1 != c2)
+            if (l < r)
             {
-                for(i = r2 - 1; i >= r1 + 1; --i)
-                    r[i][c1] = ++count;
+                for (i = b - 1; i > t; --i)
+                    m[i][l] = c++;
             }
-            ++c1; ++r1; --c2; --r2;
+            ++l; --r; ++t; --b;
         }
-        return r;
+        return m;
     }
 };
-
-int main()
-{
-    Solution s;
-    int n = 4;
-    vector<vector<int> > r = s.generateMatrix(n);
-    for(int i = 0; i < n; ++i)
-    {
-        for(int j = 0; j < n; ++j)
-            cout<<r[i][j]<<" ";
-        cout<<endl;
-    }
-}

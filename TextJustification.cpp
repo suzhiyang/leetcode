@@ -1,70 +1,37 @@
-#include <iostream>
-#include <vector>
-#include <string>
-
-using namespace std;
-
 class Solution {
 public:
-    vector<string> fullJustify(vector<string> &words, int L) {
-        int i = 0, st = 0, ed = 0, wordlen = 0, j;
+    vector<string> fullJustify(vector<string>& words, int l) {
         vector<string> r;
-        string line;
+        int i = 0, j, k;
         while(i < words.size())
         {
-            wordlen = words[i].size();
-            st = i++;
-            for(; i < words.size(); ++i)
+            vector<string> cur;
+            int len = 0;
+            while(i < words.size())
             {
-                if (wordlen + i - st + words[i].size() <= L)
-                    wordlen += words[i].size();
+                if (len + words[i].size() + cur.size() <= l)
+                {
+                    len += words[i].size();
+                    cur.push_back(words[i]);
+                    ++i;
+                }
                 else break;
             }
-            line = words[st];
-            if (i < words.size())
+            string str(l, ' ');
+            int spc = 1, rem = 0, pos = cur[0].size();
+            for (k = 0; k < cur[0].size(); ++k)
+                str[k] = cur[0][k];
+            if (i < words.size() && cur.size() > 1)
+                spc = (l - len) / (cur.size() - 1), rem = (l - len) % (cur.size() - 1);
+            for (j = 1; j < cur.size(); ++j)
             {
-                int wordnum = i - st, spaces = L - wordlen;
-                if (wordnum == 1)
-                {
-                    for(j = line.size(); j < L; ++j)
-                        line += " ";
-                }
-                else
-                {
-                    int gap, remain;
-                    gap = spaces / (wordnum - 1);
-                    remain = spaces % (wordnum - 1);
-                    string sp;
-                    for(j = 0; j < gap; ++j) sp += " ";
-                    for(j = st + 1; j < i; ++j)
-                    {
-                        line = line + sp;
-                        if (remain > 0)
-                        {
-                            line += " ";
-                            --remain;
-                        }
-                        line += words[j];
-                    }
-                }
+                pos += spc;
+                if (rem > 0) {++pos; --rem;}
+                for (k = 0; k < cur[j].size(); ++k)
+                    str[pos++] = cur[j][k];
             }
-            else
-            {
-                for(j = st + 1; j < words.size(); ++j)
-                    line += " " + words[j];
-                for(j = line.size(); j < L; ++j)
-                    line += " ";
-            }
-            r.push_back(line);
+            r.push_back(str);
         }
         return r;
     }
 };
-
-int main()
-{
-    char *a[] = {"This", "is", "an", "example", "of", "1234567812345678", "text", "justification."};
-    Solution s;
-    vector<string> words(a, a + sizeof(a) / sizeof(a[0]));
-    s.fullJustify(words, 16);
-}

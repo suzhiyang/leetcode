@@ -5,19 +5,23 @@ using namespace std;
 
 class Solution {
 public:
-    string convert(string s, int nRows) {
-        if (nRows < 2) return s;
-        int z = 2 * nRows - 2;
-        int col = s.size() / z + 1;
+    string convert(string s, int numRows) {
+        if (numRows == 1) return s;
+        int i, j, k = 2 * (numRows - 1);
         string r;
-        int i, j;
-        for (i = 0; i < nRows; ++i)
+        for (i = 0; i < numRows; ++i)
         {
-            for (j = 0; j < col; ++j)
+            for (j = 0; j < s.size() + k; j += k)
             {
-                if (j * z + i < s.size()) r += s[j * z + i];
-                if (i > 0 && i < nRows - 1)
-                    if ((j + 1) * z - i < s.size()) r += s[(j + 1) * z - i];
+                if (i == 0 || i == numRows - 1)
+                {
+                    if (j + i < s.size()) r += s[j + i];
+                }
+                else
+                {
+                    if (j - i >= 0 && j - i < s.size()) r += s[j - i];
+                    if (j + i >= 0 && j + i < s.size()) r += s[j + i];
+                }
             }
         }
         return r;
@@ -27,10 +31,6 @@ public:
 int main()
 {
     Solution s;
-    string str;
-    str = "PAYPALISHIRING";
-    cout<<str<<endl<<s.convert(str, 1)<<endl<<"----------------"<<endl;
-    cout<<str<<endl<<s.convert(str, 2)<<endl<<"----------------"<<endl;
-    cout<<str<<endl<<s.convert(str, 3)<<endl<<"----------------"<<endl;
-    cout<<str<<endl<<s.convert(str, 4)<<endl<<"----------------"<<endl;
+    string str = "AB";
+    cout<<s.convert(str, 2)<<endl;
 }

@@ -1,24 +1,22 @@
 #include <iostream>
-#include <cmath>
 
 using namespace std;
 
 class Solution {
 public:
     bool isPalindrome(int x) {
-        int len, i, j, a[20];
         if (x < 0) return false;
-        len = int(log10(x));
-        a[0] = 1;
-        for(i = 1; i <= len; ++i)
-            a[i] = a[i - 1] * 10;
-        i = 0; j = len;
-        while(i < j)
+        if (x < 10) return true;
+        int l = 1, m = 1, t = x;
+        while(t >= 10)
         {
-            int m, n;
-            m = x / a[i++] % 10;
-            n = x / a[j--] % 10;
-            if (m != n) return false;
+            t /= 10;
+            m *= 10;
+        }
+        while(l < m)
+        {
+            if (x / l % 10 != x / m % 10) return false;
+            l *= 10; m /= 10;
         }
         return true;
     }
@@ -27,16 +25,7 @@ public:
 int main()
 {
     Solution s;
-    int a = 12345;
-    cout<<a<<" "<<s.isPalindrome(a)<<endl;
-    a = 5;
-    cout<<a<<" "<<s.isPalindrome(a)<<endl;
-    a = 12321;
-    cout<<a<<" "<<s.isPalindrome(a)<<endl;
-    a = 123321;
-    cout<<a<<" "<<s.isPalindrome(a)<<endl;
-    a = -2147483648;
-    cout<<a<<" "<<s.isPalindrome(a)<<endl;
-    a = -2147447412;
-    cout<<a<<" "<<s.isPalindrome(a)<<endl;
+    cout<<s.isPalindrome(10021)<<endl;
+    cout<<s.isPalindrome(121)<<endl;
+    cout<<s.isPalindrome(1000000001)<<endl;
 }

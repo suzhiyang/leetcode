@@ -1,49 +1,25 @@
-#include <iostream>
-#include <string>
-#include <stack>
-
-using namespace std;
-
 class Solution {
 public:
     string simplifyPath(string path) {
-        string cur, r;
-        stack<string> s;
-        path += '/';
-        for (int i = 0; i < path.size(); ++i)
+        if (path == "") return "";
+        deque<string> dq;
+        string t, r;
+        size_t cur = path.find_first_of("/"), pos;
+        while(cur != string::npos)
         {
-            if (path[i] == '/')
-            {
-                if (cur == "..") {if (!s.empty()) s.pop();}
-                else if (cur != "." && cur != "") s.push(cur);
-                cur = "";
-            }
-            else cur = cur + path[i];
+            pos = path.find_first_of("/", cur + 1);
+            if (pos != string::npos) t = path.substr(cur + 1, pos - cur - 1);
+            else t = path.substr(cur + 1);
+            if (t == "..") {if (!dq.empty()) dq.pop_back();}
+            else if (t != "." && t != "") dq.push_back(t);
+            cur = pos;
         }
-        r = "";
-        while(!s.empty())
+        while(!dq.empty())
         {
-            r = "/" + s.top() + r;
-            s.pop();
+            r = r + "/" + dq.front();
+            dq.pop_front();
         }
-        if (r == "") r = "/";
+        if (r == "") return "/";
         return r;
     }
 };
-
-int main()
-{
-    Solution s;
-    string str = "/a/./b/../../c/";
-    cout<<str<<"    "<<s.simplifyPath(str)<<endl;
-    str = "/home/";
-    cout<<str<<"    "<<s.simplifyPath(str)<<endl;
-    str = "./home/dd/";
-    cout<<str<<"    "<<s.simplifyPath(str)<<endl;
-    str = "./home/../dd/kdjf/..";
-    cout<<str<<"    "<<s.simplifyPath(str)<<endl;
-    str = "/../";
-    cout<<str<<"    "<<s.simplifyPath(str)<<endl;
-    str = "/home//foo/";
-    cout<<str<<"    "<<s.simplifyPath(str)<<endl;
-}

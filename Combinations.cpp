@@ -1,46 +1,25 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
-    vector<vector<int> > r;
+    void dfs(vector<vector<int> > &r, vector<int> &cur, int n, int k, int pos)
+    {
+        if (cur.size() == k)
+            r.push_back(cur);
+        else
+        {
+            int i;
+            for (i = pos; i <= n; ++i)
+            {
+                cur.push_back(i);
+                dfs(r, cur, n, k, i + 1);
+                cur.pop_back();
+            }
+        }
+    }
+    
     vector<vector<int> > combine(int n, int k) {
-        int i;
-        vector<int> c;
-        r.clear();
-        dfs(n, k, 1, c);
+        vector<vector<int> > r;
+        vector<int> cur;
+        dfs(r, cur, n, k, 1); //1,2,...n
         return r;
     }
-
-    void dfs(int n, int k, int pos, vector<int> &c)
-    {
-        if (k == c.size())
-        {
-            r.push_back(c);
-            return;
-        }
-        int i;
-        for(i = pos; i <= n; ++i)
-        {
-            c.push_back(i);
-            dfs(n, k, i + 1, c);
-            c.pop_back();
-        }
-        return;
-    }
 };
-
-int main()
-{
-    Solution s;
-    vector<vector<int> > r = s.combine(4, 3);
-    int i, j;
-    for(i = 0; i < r.size(); ++i)
-    {
-        for(j = 0; j < r[i].size(); ++j)
-            cout<<r[i][j]<<" ";
-        cout<<endl;
-    }
-}

@@ -1,49 +1,29 @@
-#include <iostream>
 #include <string>
 #include <sstream>
-#include <vector>
-
+#include <iostream>
 using namespace std;
 
 class Solution {
-private:
-    vector<string> vec;
 public:
-    Solution()
-    {
-        vec.push_back("1");
-        int i;
-        for (i = 1; i < 30; ++i)
-        {
-            int j, c = 1;
-            string str;
-            for (j = 1; j <= vec[i - 1].size(); ++j)
-            {
-                if (j < vec[i - 1].size() && vec[i - 1][j] == vec[i - 1][j - 1]) ++c;
-                else
-                {
-                    stringstream ss;
-                    ss<<c;
-                    str = str + ss.str() + vec[i - 1][j - 1];
-                    c = 1;
-                }
-            }
-            vec.push_back(str);
-        }
-    }
-    
     string countAndSay(int n) {
-        return vec[n - 1];
+        if (n == 1) return "1";
+        string l = countAndSay(n - 1), r;
+        int i, j = 0;
+        for (i = 0; i < l.size();)
+        {
+            while (i < l.size() && l[i] == l[j]) ++i;
+            stringstream ss;
+            ss<<(i - j)<<l[j];
+            r += ss.str();
+            j = i;
+        }
+        return r;
     }
 };
-
 
 int main()
 {
     Solution s;
-    cout<<s.countAndSay(1)<<endl;
-    cout<<s.countAndSay(2)<<endl;
-    cout<<s.countAndSay(3)<<endl;
-    cout<<s.countAndSay(4)<<endl;
-    cout<<s.countAndSay(30)<<endl;
+    for (int i = 1; i < 10; ++i)
+        cout<<s.countAndSay(i)<<endl;
 }

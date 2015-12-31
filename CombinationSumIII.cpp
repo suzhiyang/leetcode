@@ -1,25 +1,25 @@
-#include <iostream>
 #include <vector>
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
 class Solution {
 public:
-    void dfs(int k, int n, vector<int> &cur, vector<vector<int> > &r)
+    void dfs(vector<vector<int> > &r, vector<int> &cur, int sum, int k, int n)
     {
-        int i;
-        if (cur.size() == k && n == 0)
+        if (cur.size() == k)
         {
-            r.push_back(cur);
+            if (sum == n) r.push_back(cur);
         }
         else
         {
-            int i, m = 1;
-            if (cur.size() > 0) m = cur.back() + 1;
-            for (i = m; i <= min(n, 9); ++i)
+            int i = (cur.size() == 0)? 1:(cur.back() + 1);
+            for (; i <= 9; ++i)
             {
+                if (sum + i > n) break;
                 cur.push_back(i);
-                dfs(k, n - i, cur, r);
+                dfs(r, cur, sum + i, k, n);
                 cur.pop_back();
             }
         }
@@ -28,22 +28,23 @@ public:
     vector<vector<int> > combinationSum3(int k, int n) {
         vector<vector<int> > r;
         vector<int> cur;
-        dfs(k, n, cur, r);
+        dfs(r, cur, 0, k, n);
         return r;
     }
 };
 
+
 int main()
 {
-    Solution s;
-    vector<vector<int> > r = s.combinationSum3(3, 15);
+    Solution sol;
+    vector<vector<int> > r;
     int i, j;
+    r = sol.combinationSum3(3, 9);
+    r = sol.combinationSum3(3, 7);
     for (i = 0; i < r.size(); ++i)
     {
-        cout<<"[";
         for (j = 0; j < r[i].size(); ++j)
             cout<<r[i][j]<<",";
-        cout<<"]";
+        cout<<endl;
     }
-    cout<<endl;
 }

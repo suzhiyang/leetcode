@@ -1,93 +1,76 @@
-#include <iostream>
-#include <string>
-#include <vector>
 #include <cstring>
+#include <iostream>
+#include <vector>
+#include <string>
 
 using namespace std;
 
 class Solution {
 public:
-//     bool isMatch(string s, string p) {
-//         cout<<s<<" "<<p<<endl;
-//         int i, j;
-//         int *d = new int[p.size() + 1];
-//         memset(d, 0, sizeof(d) * sizeof(int));
-//         d[p.size()] = 1;
-//         for (j = p.size() - 1; j >= 0; --j)
-//         {
-//             if (p[j] == '*') d[j] = 1; // d[s.size()][j] = 1;
-//             else break;
-//         }
-//         for (j = 0; j <= p.size(); ++j)
-//             cout<<d[j]<<" ";
-//         cout<<endl;
-//         for (i = s.size() - 1; i >= 0; --i)
-//         {
-//             if (p[j] ==
-//             for (j = 0; j < p.size(); ++j)
-//             {
-//                 if (p[j] == '?') d[j] = d[j + 1]; // d[i][j] = d[i + 1][j + 1];
-//                 else if (p[j] == '*')  d[j] = d[j] | d[j + 1]; // d[i][j] = d[i][j + 1] | d[i + 1][j] | d[i + 1][j + 1];
-//                 else if (s[i] == p[j]) d[j] = d[j + 1];// d[i][j] = d[i + 1][j + 1];
-//                 else d[j] = 0;
-//             }
-//             for (j = 0; j <= p.size(); ++j)
-//                 cout<<d[j]<<" ";
-//             cout<<endl;
-//         }
-//         return d[0];
-//     }
-    
     bool isMatch(string s, string p) {
-        cout<<s<<" "<<p<<endl;
         int i, j;
-//        vector<vector<int> > d(s.size() + 1, vector<int>(p.size() + 1, 0));
-        bool **d = new bool *[s.size() + 1];
-        for (i = 0; i <= s.size(); ++i)
+        bool **dp = new bool*[s.size() + 1];
+        for (i = 0; i < s.size() + 1; ++i)
         {
-            d[i] = new bool[p.size() + 1];
-            for (j = 0; j <= p.size(); ++j)
-                d[i][j] = false;
+            dp[i] = new bool[p.size() + 1];
+            memset(dp[i], 0, sizeof(bool) * (p.size() + 1));
         }
-        d[s.size()][p.size()] = true;
-        for (j = p.size() - 1; j >= 0; --j)
+        dp[0][0] = true;
+        for (i = 1; i < s.size() + 1; ++i)
+            dp[i][0] = false;
+        for (j = 1; j < p.size() + 1; ++j)
         {
-            if (p[j] == '*') d[s.size()][j] = true;
-            else break;
+            if (dp[0][j - 1] && p[j - 1] == '*') dp[0][j] = true;
+            else dp[0][j] = 0;
         }
-        for (i = s.size() - 1; i >= 0; --i)
+        for (i = 1; i < s.size() + 1; ++i)
         {
-            for (j = p.size() - 1; j >= 0; --j)
+            for (j = 1; j < p.size() + 1; ++j)
             {
-                if (p[j] == '?') d[i][j] = d[i + 1][j + 1];
-                else if (p[j] == '*') d[i][j] = d[i][j + 1] | d[i + 1][j] | d[i + 1][j + 1];
-                else if (s[i] == p[j]) d[i][j] = d[i + 1][j + 1];
+                if (p[j - 1] == '*')
+                {
+                    dp[i][j] = dp[i][j - 1] | dp[i - 1][j] | dp[i - 1][j - 1];
+                }
+                else if (p[j - 1] == '?')
+                {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+                else
+                {
+                    if (p[j - 1] == s[i - 1]) dp[i][j] = dp[i - 1][j - 1];
+                }
             }
         }
-//         for (i = 0; i <= s.size(); ++i)
+//         for (i = 0; i < s.size() + 1; ++i)
 //         {
-//             for (j = 0; j <= p.size(); ++j)
-//                 cout<<d[i][j]<<" ";
+//             for (j = 0; j < p.size() + 1; ++j)
+//                 cout<<dp[i][j]<<" ";
 //             cout<<endl;
 //         }
-        return d[0][0];
+        return dp[s.size()][p.size()];
     }
 };
 
 int main()
 {
     Solution s;
-    cout<<s.isMatch("aa","a")<<endl;
-    cout<<s.isMatch("aa","aa")<<endl;
-    cout<<s.isMatch("aaa","aa")<<endl;
-    cout<<s.isMatch("aa","*")<<endl;
-    cout<<s.isMatch("aa","a*")<<endl;
-    cout<<s.isMatch("ab","?*")<<endl;
-    cout<<s.isMatch("aab","c*a*b")<<endl;
-    // own cases
-    cout<<s.isMatch("aab","a*?b")<<endl;
-    cout<<s.isMatch("aabcdkjs","a*?*")<<endl;
-    cout<<s.isMatch("aabjk","*jjj?")<<endl;
-    cout<<s.isMatch("djk","*jj*")<<endl;
-    cout<<s.isMatch("djk","*j*?")<<endl;
+    cout<<s.isMatch("aab", "a*b*")<<endl;
+    cout<<s.isMatch("aab", "c*a*b")<<endl;
+    cout<<s.isMatch("ab", "?*")<<endl;
+    cout<<s.isMatch("aaaababbbaaabaabbbbabaababaabbabbaabababbaaaaaaabba", "baaaaba*****b***ab******")<<endl;
+
+//     cout<<"##############################"<<endl;
+//     int **dp = new int*[5];
+//     for (int i = 0; i < 5; ++i)
+//     {
+//         dp[i] = new int[10];
+//         if (i > 0) cout<<(long long)(static_cast<const void *>(dp[i])) - (long long)(static_cast<const void *>(dp[i - 1]))<<endl;
+//     }
+//     cout<<sizeof(int) * 8<<endl;
+//     cout<<sizeof(dp[0])<<endl;
+//     int t[5];
+//     cout<<sizeof(t)<<endl;
+//     cout<<sizeof(int) * 5<<endl;
+//     int d[5][6];
+//     cout<<sizeof(d[0])<<endl;
 }

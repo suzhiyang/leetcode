@@ -6,26 +6,27 @@ using namespace std;
 class Solution {
 public:
     vector<int> productExceptSelf(vector<int>& nums) {
-        vector<int> v(nums.size(), 1);
-        int i, r = 1;
+        vector<int> r(nums.size(), 1);
+        int t = 1, i;
         for (i = 1; i < nums.size(); ++i)
-            v[i] = v[i - 1] * nums[i - 1];
+        {
+            t *= nums[i - 1];
+            r[i] = t;
+        }
+        t = 1;
         for (i = nums.size() - 2; i >= 0; --i)
         {
-            r *= nums[i + 1];
-            v[i] *= r;
+            t *= nums[i + 1];
+            r[i] *= t;
         }
-        return v;
+        return r;
     }
 };
 
 int main()
 {
-    int a[] = {1,2,3,4,5}, i;
-    vector<int> v(a, a + 1);
     Solution s;
-    vector<int> p = s.productExceptSelf(v);
-    for (i = 0; i < p.size(); ++i)
-        cout<<p[i]<<",";
-    cout<<endl;
+    vector<int> v(2, 0);
+    vector<int> r = s.productExceptSelf(v);
+    cout<<r[0]<<":"<<r[1]<<endl;
 }

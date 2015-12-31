@@ -1,35 +1,14 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
-    int maxArea(vector<int> &height) {
-        int maxarea = 0, i, j, area;
-        i = 0; j = height.size() - 1;
-        while(i < j)
+    int maxArea(vector<int>& height) {
+        int l = 0, r = height.size() - 1, maxarea = 0, h;
+        while(l < r)
         {
-            if (height[i] < height[j])
-            {
-                area = height[i] * (j - i);
-                ++i;
-            }
-            else
-            {
-                area = height[j] * (j - i);
-                --j;
-            }
-            if (area > maxarea) maxarea = area;
+            h = min(height[l], height[r]);
+            maxarea = max(maxarea, (r - l) * h);
+            while(height[l] <= h && l < r) ++l;
+            while(height[r] <= h && l < r) --r;
         }
         return maxarea;
     }
 };
-
-int main()
-{
-    int a[] = {2,1,3,1,5,4};
-    vector<int> v(a, a + sizeof(a) / sizeof(a[0]));
-    Solution s;
-    cout<<s.maxArea(v)<<endl;
-}

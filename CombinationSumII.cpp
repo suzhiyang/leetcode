@@ -1,56 +1,52 @@
-#include <iostream>
 #include <vector>
-#include <functional>
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
 class Solution {
 public:
-    vector<vector<int> > r;
-    int m_target;
-    vector<vector<int> > combinationSum2(vector<int> &candidates, int target) {
-        r.clear();
-        sort(candidates.begin(), candidates.end());
-        vector<int> cur;
-        m_target = target;
-        int sum = 0;
-        dfs(candidates, 0, sum, cur);
-        return r;
-    }
-
-    void dfs(vector<int> &candidates, int pos, int sum, vector<int> &cur)
+    void dfs(vector<vector<int> > &r, vector<int> &cur, vector<int> &c, int si, int sum, int target)
     {
-        int i;
-        if (sum > m_target) return;
-        else if (sum == m_target) r.push_back(cur);
-        else
+        if (sum == target)
+            r.push_back(cur);
+        else if (sum < target)
         {
-            for(i = pos; i < candidates.size(); ++i)
+            int i;
+            for (i = si; i < c.size(); ++i)
             {
-                sum += candidates[i];
-                cur.push_back(candidates[i]);
-                dfs(candidates, i + 1, sum, cur);
+                if (i > si && c[i] == c[i - 1]) continue;
+                if (sum + c[i] > target) break;
+                cur.push_back(c[i]);
+                dfs(r, cur, c, i + 1, sum + c[i], target);
                 cur.pop_back();
-                sum -= candidates[i];
-                while(i < candidates.size() - 1 && candidates[i] == candidates[i + 1])
-                    ++i;
             }
         }
+    }
+    
+    vector<vector<int> > combinationSum2(vector<int>& candidates, int target) {
+        vector<vector<int> > r;
+        vector<int> cur;
+        sort(candidates.begin(), candidates.end());
+        dfs(r, cur, candidates, 0, 0, target);
+        return r;
     }
 };
 
 int main()
 {
-    Solution s;
-    int a[] = {10,1,2,7,6,1,5};
-    vector<int> v(a, a + sizeof(a) / sizeof(a[0]));
+    Solution sol;
     vector<vector<int> > r;
-    r = s.combinationSum2(v, 8);
     int i, j;
-    for(i = 0; i < r.size(); ++i)
+    int a[] = {10,1,2,7,6,1,5};
+    vector<int> v(a, a + 7);
+//     int a[] = {1,1,2,2,5};
+//     vector<int> v(a, a + 5);
+    r = sol.combinationSum(v, 8);
+    for (i = 0; i < r.size(); ++i)
     {
-        for(j = 0; j < r[i].size(); ++j)
-            cout<<r[i][j]<<" ";
+        for (j = 0; j < r[i].size(); ++j)
+            cout<<r[i][j]<<",";
         cout<<endl;
     }
 }

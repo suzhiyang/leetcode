@@ -1,33 +1,25 @@
-#include <iostream>
-#include <cstring>
-
-using namespace std;
-
 class Solution {
 public:
-    int lengthOfLastWord(const char *s) {
-        const char *p = s;
-        int count = 0, prespace = 0;
-        while (*p != 0)
-        {
-            if (*p == ' ') prespace = 1;
-            else
+    int lengthOfLastWord(string s) {
+        int r = 0, i;
+        for (i = 0; i < s.size(); ++i)
+            if (s[i] != ' ')
             {
-                if (prespace == 1) count = 1;
-                else ++count;
-                prespace = 0;
+                if (i > 0 && s[i - 1] == ' ') r = 1;
+                else ++r;
             }
-            ++p;
-        }
-        return count;
+        return r;
     }
 };
-
-int main()
-{
-    char str[] = "hello world";
-    Solution s;
-    cout<<s.lengthOfLastWord(str)<<endl;
-    strcpy(str, "k ");
-    cout<<s.lengthOfLastWord(str)<<endl;
-}
+// class Solution {
+// public:
+//     int lengthOfLastWord(string s) {
+//         int r = 0, i;
+//         for (i = s.size() - 1; i >= 0; --i)
+//             if (s[i] != ' ') break;
+//         for (;i >= 0; --i)
+//             if (s[i] == ' ') break;
+//             else ++r;
+//         return r;
+//     }
+// };

@@ -1,62 +1,44 @@
 #include <iostream>
-#include <string>
 #include <vector>
-
+#include <string>
 using namespace std;
 
 class Solution {
 public:
-    vector<int> ways(vector<int> &v, int s, int e)
-    {// op: -1: +, -2: -, -3: *
-        vector<int> res;
-        int p, op;
-        if (s == e) 
+    void dfs(vector<int> &r, vector<int> &v, int s, int e)
+    {
+        if (s == e) {r.push_back(v[s]); return;}
+        for (int i = s + 1; i < e; i += 2)
         {
-            res.push_back(v[s]);
-            return res;
+            vector<int> left, right;
+            dfs(left, v, s, i - 1);
+            dfs(right, v, i + 1, e);
+            for (auto a : left)
+                for (auto b : right)
+                    if (v[i] == 1) r.push_back(a + b);
+                    else if (v[i] == 2) r.push_back(a - b);
+                    else r.push_back(a * b);
         }
-        for (p = s + 1; p < e; p += 2)
-        {
-            vector<int> l, r;
-            op = v[p];
-            l = ways(v, s, p - 1);
-            r = ways(v, p + 1, e);
-            for (int i = 0; i < l.size(); ++i)
-                for (int j = 0; j < r.size(); ++j)
-                    if (op == -1) res.push_back(l[i] + r[j]);
-                    else if (op == -2) res.push_back(l[i] - r[j]);
-                    else if (op == -3) res.push_back(l[i] * r[j]);
-        }
-//         cout<<s<<"--"<<e<<"--------------"<<endl;
-//         for (int i = 0; i < res.size(); ++i)
-//             cout<<res[i]<<" ";
-//         cout<<endl;
-        return res;
     }
     
-    vector<int> diffWaysToCompute(string input) {
-        vector<int> tokens;
-        int i, num = 0;
-        for (i = 0; i < input.size(); ++i)
+    vector<int> diffWaysToCompute(string s) {
+        int i, n = 0;
+        vector<int> v, r;
+        for (i = 0; i < s.size(); ++i)
         {
-            if (input[i] >= '0' && input[i] <= '9')
+            if (s[i] >= '0' && s[i] <= '9') n = n * 10 + s[i] - '0';
+            else if (s[i] == '+' || s[i] == '-' || s[i] == '*')
             {
-                num = num * 10 + input[i] - '0';
-            }
-            else
-            {
-                tokens.push_back(num);
-                num = 0;
-                if (input[i] == '+') tokens.push_back(-1);
-                else if (input[i] == '-') tokens.push_back(-2);
-                else if (input[i] == '*') tokens.push_back(-3);
+                v.push_back(n);
+                n = 0;
+                if (s[i] == '+') v.push_back(1);
+                else if (s[i] == '-') v.push_back(2);
+                else v.push_back(3);
             }
         }
-        tokens.push_back(num);
-//         for (i = 0; i < tokens.size(); ++i)
-//             cout<<tokens[i]<<" ";
-//         cout<<endl;
-        return ways(tokens, 0, tokens.size() - 1);
+        v.push_back(n);
+        dfs(r, v, 0, v.size() - 1);
+        return r;
     }
 };
 
@@ -64,10 +46,9 @@ int main()
 {
     Solution s;
     vector<int> r;
-    string str;
-    str = "2*3-4*5";
-    r = s.diffWaysToCompute(str);
-    for (int i = 0; i < r.size(); ++i)
-        cout<<r[i]<<",";
+    r = s.diffWaysToCompute("2-1-1");
+    r = s.diffWaysToCompute("2*3-4*5");
+    for (auto a : r)
+        cout<<a<<",";
     cout<<endl;
 }

@@ -1,43 +1,25 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
-    int maxProfit(vector<int> &prices) {
-        int n = prices.size();
+    int maxProfit(vector<int>& prices) {
+        int i, maxp = 0, lowest, highest, r = 0;
         if (prices.size() < 2) return 0;
-        int i, j, min = INT_MAX, profit = 0, t;
-        vector<int> p1(n, 0), p2(n, 0);
-        for(i = 0; i < n; ++i)
+        lowest = prices[0];
+        vector<int> l(prices.size(), 0);
+        for (i = 1; i < prices.size(); ++i)
         {
-            if (prices[i] < min) min = prices[i];
-            t = prices[i] - min;
-            if (t > profit) profit = t;
-            p1[i] = profit;
+            lowest = min(lowest, prices[i]);
+            maxp = max(maxp, prices[i] - lowest);
+            l[i] = maxp;
         }
-        int max = INT_MIN;
-        profit = 0;
-        for(i = n - 1; i >= 0; --i)
+        highest = prices.back();
+        maxp = 0;
+        for (i = prices.size() - 1; i > 0; --i)
         {
-            if (prices[i] > max) max = prices[i];
-            t = max - prices[i];
-            if (t > profit) profit = t;
-            p2[i] = profit;
+            highest = max(highest, prices[i]);
+            maxp = maxp(maxp, highest - prices[i]);
+            r = max(r, maxp + l[i - 1]);
         }
-        profit = 0;
-        for(i = 0; i < n; ++i)
-            if (p1[i] + p2[i] > profit) profit = p1[i] + p2[i];
-        return profit;
+        r = max(r, highest - prices[0]);
+        return r;
     }
 };
-
-int main()
-{
-    Solution s;
-    int a[] = {2,1,3,8,6};
-//    int a[] = {2,1,8,5,6,9};
-    vector<int> v(a, a + sizeof(a) / sizeof(a[0]));
-    cout<<s.maxProfit(v)<<endl;
-}

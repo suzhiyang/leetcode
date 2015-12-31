@@ -1,17 +1,16 @@
 class Solution {
 public:
-    int traverse(TreeNode *root, int &c)
+    int count(TreeNode *root)
     {
-        if (root == NULL) return INT_MAX;
-        int l, r;
-        l = traverse(root->left, c);
-        if (c == 0) return l;
-        if (--c == 0) return root->val;
-        r = traverse(root->right, c);
-        return r;
+        if (root == NULL) return 0;
+        return 1 + count(root->left) + count(root->right);
     }
     
-    int kthSmallest(TreeNode *root, int k) {
-        return traverse(root, k);
+    int kthSmallest(TreeNode* root, int k) {
+        int l;
+        l = count(root->left);
+        if (k == l + 1) return root->val;
+        else if (k < l + 1) return kthSmallest(root->left, k);
+        else return kthSmallest(root->right, k - l - 1);
     }
 };

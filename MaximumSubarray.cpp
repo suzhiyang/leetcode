@@ -1,29 +1,14 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
-    int maxSubArray(int A[], int n) {
-        vector<int> b(n, 0);
-        b[0] = A[0];
-        int i, max;
-        for(i = 1; i < n; ++i)
+    int maxSubArray(vector<int>& nums) {
+        vector<int> dp(nums.size(), 0);
+        dp[0] = nums[0];
+        int i, r = dp[0];
+        for (i = 1; i < nums.size(); ++i)
         {
-            if (b[i - 1] > 0) b[i] = b[i - 1] + A[i];
-            else b[i] = A[i];
+            dp[i] = max(dp[i - 1] + nums[i], nums[i]);
+            r = max(r, dp[i]);
         }
-        max = b[0];
-        for(i = 1; i < n; ++i)
-            if (b[i] > max) max = b[i];
-        return max;
+        return r;
     }
 };
-
-int main()
-{
-    int a[] = {-2,1,-3,4,-1,2,1,-5,4};
-    Solution s;
-    cout<<s.maxSubArray(a, sizeof(a) / sizeof(a[0]))<<endl;
-}

@@ -1,41 +1,17 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
     vector<vector<int> > generate(int numRows) {
-        vector<vector<int> > result;
-        if (numRows == 0) return result;
-        vector<int> r1(1, 1);
-        result.push_back(r1);
-        int row, col;
-        for (row = 1; row < numRows; ++row)
+        if (numRows == 0) return vector<vector<int> >();
+        vector<vector<int> > r(1, vector<int>(1, 1));
+        int i, j;
+        for (i = 1; i < numRows; ++i)
         {
-            vector<int> ri;
-            ri.push_back(1);
-            for (col = 1; col < row; ++col)
-            {
-                ri.push_back(result[row - 1][col - 1] + result[row - 1][col]);
-            }
-            ri.push_back(1);
-            result.push_back(ri);
+            vector<int> row(1, 1);
+            for (j = 1; j < i; ++j)
+                row.push_back(r[i - 1][j - 1] + r[i - 1][j]);
+            row.push_back(1);
+            r.push_back(row);
         }
-        return result;
+        return r;
     }
 };
-
-int main()
-{
-    Solution s;
-    vector<vector<int> > triangle = s.generate(5);
-    int row, col;
-    for (row = 0; row < triangle.size(); ++row)
-    {
-        for (col = 0; col < triangle[row].size(); ++col)
-            cout<<triangle[row][col]<<",";
-        cout<<endl;
-    }
-    return 0;
-}

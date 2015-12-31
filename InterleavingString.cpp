@@ -1,53 +1,41 @@
-#include <iostream>
 #include <string>
-#include <vector>
-
+#include <cstring>
+#include <iostream>
 using namespace std;
 
 class Solution {
 public:
     bool isInterleave(string s1, string s2, string s3) {
-        // Mergesort is not work, 2-dimention DP
         if (s1.size() + s2.size() != s3.size()) return false;
-        vector<vector<int> > m;
-        int i, j;
-        for (i = 0; i < s1.size() + 1; ++i)
+        int i, j, m = s1.size(), n = s2.size();
+        bool **dp = new bool*[m + 1];
+        for (i = 0; i <= m; ++i)
         {
-            m.push_back(vector<int>(s2.size() + 1));
+            dp[i] = new bool[n + 1];
+            memset(dp[i], 0, sizeof(bool) * (n + 1));
         }
-        m[0][0] = 1;
-        for (i = 1; i < s1.size() + 1; ++i)
+        dp[0][0] = true;
+        for (i = 1; i <= m; ++i)
+            dp[i][0] = dp[i - 1][0] & (s1[i - 1] == s3[i - 1]);
+        for (j = 1; j <= n; ++j)
+            dp[0][j] = dp[0][j - 1] & (s2[j - 1] == s3[j - 1]);
+        for (i = 1; i <= m; ++i)
         {
-            if (s3[i - 1] == s1[i - 1]) m[i][0] = m[i - 1][0];
-            else m[i][0] = 0;
-        }
-        for (j = 1; j < s2.size() + 1; ++j)
-        {
-            if (s3[j - 1] == s2[j - 1]) m[0][j] = m[0][j - 1];
-            else m[0][j] = 0;
-        }
-        for (i = 1; i < s1.size() + 1; ++i)
-        {
-            for (j = 1; j < s2.size() + 1; ++j)
+            for (j = 1; j <= n; ++j)
             {
-                if (s3[i + j - 1] == s1[i - 1]) m[i][j] |= m[i - 1][j];
-                if (s3[i + j - 1] == s2[j - 1]) m[i][j] |= m[i][j - 1];
+                dp[i][j] = (dp[i - 1][j] & (s1[i - 1] == s3[i + j - 1])) |
+                    (dp[i][j - 1] & (s2[j - 1] == s3[i + j - 1]));
             }
         }
-        return m[s1.size()][s2.size()];
+        return dp[m][n];
     }
 };
 
 int main()
 {
     Solution s;
-    string s1 = "aabcc", s2 = "dbbca", s3;
-    s3 = "aadbbcbcac";
-    cout<<s.isInterleave(s1, s2, s3)<<endl;
-    s3 = "aadbbbaccc";
-    cout<<s.isInterleave(s1, s2, s3)<<endl;
-    s1 = "a";
-    s2 = "bd";
-    s3 = "bad";
-    cout<<s.isInterleave(s1, s2, s3)<<endl;
+    string s1, s2;
+    s1 = "aabcc", s2 = "dbbca";
+    cout<<s.isInterleave(s1, s2, "aadbbcbcac")<<endl;
+    cout<<s.isInterleave(s1, s2, "aadbbbaccc")<<endl;
 }

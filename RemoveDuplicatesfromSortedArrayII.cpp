@@ -1,36 +1,21 @@
-#include <iostream>
-
-using namespace std;
-
 class Solution {
 public:
-    int removeDuplicates(int A[], int n) {
-        if (n < 2) return n;
-        int count = 1, i, dup = 1;
-        for(i = 1; i < n; ++i)
+    int removeDuplicates(vector<int>& nums) {
+        int k = 2;
+        if (nums.size() <= k) return nums.size();
+        int i = 0, j = 0, c = 1;
+        for (j = 1 ; j < nums.size(); ++j)
         {
-            if (A[i] == A[count - 1]) ++dup;
-            else dup = 1;
-            if (dup < 3) A[count++] = A[i];
+            if (nums[j] == nums[j - 1])
+            {
+                if (c++ < k) nums[i++] = nums[j];
+            }
+            else
+            {
+                c = 1;
+                nums[i++] = nums[j];
+            }
         }
-        return count;
+        return i;
     }
 };
-
-int main()
-{
-    Solution s;
-    int a[] = {1, 1, 1, 2, 2, 3};
-    int count, i;
-    count = s.removeDuplicates(a, 6);
-    for (i = 0; i < count; ++i)
-        cout<<a[i]<<" ";
-    cout<<endl;
-
-    int b[] = {1, 1, 1, 2, 2, 3, 3, 3};
-    count = s.removeDuplicates(b, 7);
-    for (i = 0; i < count; ++i)
-        cout<<b[i]<<" ";
-    cout<<endl;
-
-}

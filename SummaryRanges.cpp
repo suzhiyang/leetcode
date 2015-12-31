@@ -1,53 +1,22 @@
-#include <vector>
-#include <iostream>
-#include <string>
-#include <cstdio>
-
-using namespace std;
-
 class Solution {
 public:
-    string convert(int a, int b)
-    {
-        string r;
-        char buf[200];
-        sprintf(buf, "%d", a);
-        r = r + string(buf);
-        if (a != b)
-        {
-            sprintf(buf, "%d", b);
-            r += "->" + string(buf);
-        }
-        return r;
-    }
-
     vector<string> summaryRanges(vector<int>& nums) {
-        int i, si = 0;
+        int i, j;
         vector<string> r;
-        if (nums.size() == 0) return r;
-        string s;
-        for (i = 1; i < nums.size(); ++i)
+        for (i = 0; i < nums.size();)
         {
-            if (nums[i] != nums[i - 1] + 1)
+            stringstream ss;
+            ss<<nums[i];
+            for (j = i; j + 1 < nums.size(); ++j)
+                if (nums[j + 1] != nums[j] + 1) break;
+            if (j == i) ++i;
+            else
             {
-                r.push_back(convert(nums[si], nums[i - 1]));
-                si = i;
+                ss<<"->"<<nums[j];
+                i = j + 1;
             }
+            r.push_back(ss.str());
         }
-        r.push_back(convert(nums[si], nums[i - 1]));
         return r;
     }
 };
-
-int main()
-{
-    Solution sol;
-    vector<int> v;
-    vector<string> s;
-    v.push_back(0);
-    v.push_back(1);
-    s = sol.summaryRanges(v);
-    int i;
-    for (i = 0; i < s.size(); ++i)
-        cout<<s[i]<<endl;
-}

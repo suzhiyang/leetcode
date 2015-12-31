@@ -1,33 +1,16 @@
-#include <iostream>
-#include <cmath>
-#include <cstring>
-
-using namespace std;
-
 class Solution {
 public:
     int countPrimes(int n) {
-        int c = 0, i, p;
-        int *a = new int[n];
-        memset(a, 0, n * sizeof(int));
-        for (p = 2; p < int(sqrt(n)) + 1; ++p)
+        int p[2000000] = {0}, i, j, r = 0;
+        for (i = 2; i < n; ++i)
         {
-            if (a[p] == 0)
+            if (p[i] == 0)
             {
-                ++c;
-                for (i = p * 2; i < n; i += p)
-                    a[i] = 1;
+                ++r;
+                for (j = i * 2; j < n; j += i)
+                    p[j] = 1;
             }
         }
-        for (; p < n; ++p)
-            if (a[p] == 0) ++c;
-        return c;
+        return r;
     }
 };
-
-int main()
-{
-    Solution s;
-    cout<<s.countPrimes(5)<<endl;
-    cout<<s.countPrimes(15)<<endl;
-}

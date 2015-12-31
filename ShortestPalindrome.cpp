@@ -1,53 +1,17 @@
-#include <iostream>
-#include <string>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
-    void buildtable(string &s, int *pi)
-    {
-        int i, k = 0;
-        pi[0] = 0;
-        for (i = 1; i < s.size(); ++i)
+    string shortestPalindrome(string s) {
+        string rev(s.rbegin(), s.rend());
+        string p = s + "#" + rev;
+        vector<int> pi(p.size(), 0);
+        int k = 0, i;
+        for (i = 1; i < p.size(); ++i)
         {
-            while(k > 0 && s[k] != s[i])
+            while(k > 0 && p[k] != p[i])
                 k = pi[k - 1];
-            if (s[k] == s[i]) k = k + 1;
+            if (p[k] == p[i]) ++k;
             pi[i] = k;
         }
-    }
-    
-    string shortestPalindrome(string s) {
-        int i;
-        string r(s.rbegin(), s.rend());
-        int *pi = new int[s.size()];
-        buildtable(s, pi);
-        int k = 0;
-        for (i = 0; i < r.size(); ++i)
-        {
-            while (k > 0 && r[i] != s[k])
-                k = pi[k - 1];
-            if (r[i] == s[k])
-                k = k + 1;
-        }
-        r = r + s.substr(k);
-//        delete []pi;
-        return r;
+        return rev.substr(0, rev.size() - k) + s;
     }
 };
-
-int main()
-{
-    Solution s;
-    string str;
-    str = "abcd";
-    cout<<str<<":"<<s.shortestPalindrome(str)<<endl;
-    str = "aacecaaa";
-    cout<<str<<":"<<s.shortestPalindrome(str)<<endl;
-    str = "a";
-    cout<<str<<":"<<s.shortestPalindrome(str)<<endl;
-    str = "ababbbabbaba";
-    cout<<str<<":"<<s.shortestPalindrome(str)<<endl;
-}

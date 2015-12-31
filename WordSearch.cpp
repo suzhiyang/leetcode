@@ -1,41 +1,40 @@
-#include <vector>
 #include <iostream>
+#include <vector>
 #include <string>
-
 using namespace std;
 
 class Solution {
 public:
-    bool exist(vector<vector<char> > &board, string word) {
-        int row = board.size(), col = board[0].size();
-        int *v = new int[row * col];
-        bool r;
-        int i, j;
-        for (i = 0; i < board.size(); ++i)
+    bool dfs(vector<vector<char> > &board, vector<vector<bool> > &v, int x, int y, string &word, int pos)
+    {
+        if (v[x][y] == true) return false;
+        if (pos == word.size() - 1)
         {
-            for(j = 0; j < board[0].size(); ++j)
-            {
-                memset(v, 0, sizeof(int) * row * col);
-                r = dfs(board, v, i, j, word, 0);
-                if (r == true) return true;
-            }
+            if (board[x][y] == word[pos]) return true;
+            else return false;
+        }
+        int m = board.size(), n = board[0].size();
+        if (board[x][y] == word[pos])
+        {
+            v[x][y] = true;
+            if (x + 1 < m && dfs(board, v, x + 1, y, word, pos + 1)) return true;
+            if (x - 1 >= 0 && dfs(board, v, x - 1, y, word, pos + 1)) return true;
+            if (y + 1 < n && dfs(board, v, x, y + 1, word, pos + 1)) return true;
+            if (y - 1 >= 0 && dfs(board, v, x, y - 1, word, pos + 1)) return true;
+            v[x][y] = false;
         }
         return false;
     }
-
-    bool dfs(vector<vector<char> > &board, int *v,
-             int x, int y, string &word, int s)
-    {
-        if (s == word.size()) return true;
-        if (x < 0 || x >= board.size() || y < 0 || y >= board[0].size()) return false;
-        int col = board[0].size();
-        if (v[x * col + y] == 1 || board[x][y] != word[s]) return false;
-        v[x * col + y] = 1;
-        if (dfs(board, v, x + 1, y, word, s + 1) ||
-            dfs(board, v, x - 1, y, word, s + 1) ||
-            dfs(board, v, x, y + 1, word, s + 1) ||
-            dfs(board, v, x, y - 1, word, s + 1)) return true;
-        v[x * col + y] = 0;
+    
+    bool exist(vector<vector<char> >& board, string word) {
+        if (word == "") return true;
+        vector<vector<bool> > v(board.size(), vector<bool>(board[0].size(), false));
+        int i, j;
+        for (i = 0; i < board.size(); ++i)
+        {
+            for (j = 0; j < board[i].size(); ++j)
+                if (dfs(board, v, i, j, word, 0)) return true;
+        }
         return false;
     }
 };
@@ -43,26 +42,13 @@ public:
 int main()
 {
     Solution s;
-    char a[][5] = {"ABCE",
-                   "SFCS",
-                   "ADEE"};
-//     char a[][5] = {"ABCE",
-//                    "SFES",
-//                    "ADEE"};
     vector<vector<char> > board;
-    int i;
+    char a[][10] = {"ABCE",
+                    "SFCS",
+                    "ADEE"};
+    int i, j;
     for (i = 0; i < 3; ++i)
         board.push_back(vector<char>(a[i], a[i] + 4));
-    string str;
-    str = "ABCCED";
-    cout<<s.exist(board, str)<<endl;
-    str = "SEE";
-    cout<<s.exist(board, str)<<endl;
-    str = "ABCB";
-    cout<<s.exist(board, str)<<endl;
-    str = "ABCESEEEFS";
-    cout<<s.exist(board, str)<<endl;
-//     board.clear();
-//     board.push_back(vector<char>('a', 1));
-//     cout<<s.exist(board, str)<<endl;
+    cout<<s.exist(board, "ABCCED")<<endl;
+    cout<<s.exist(board, "ABCB")<<endl;
 }

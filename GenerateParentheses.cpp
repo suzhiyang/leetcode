@@ -1,47 +1,30 @@
-#include <iostream>
-#include <vector>
-#include <string>
-
-using namespace std;
-
 class Solution {
-private:
-    vector<string> m_r;
 public:
-    vector<string> generateParenthesis(int n) {
-        string s;
-        generate(n, n, s);
-        return m_r;
-    }
-
-    void generate(int l, int r, string &s)
+    void generate(vector<string> &res, string &cur, int l, int r)
     {
         if (l == 0 && r == 0)
         {
-            m_r.push_back(s);
+            res.push_back(cur);
             return;
         }
-        string s1, s2;
         if (l > 0)
         {
-            s1 = s + '(';
-            generate(l - 1, r, s1);
+            cur += '(';
+            generate(res, cur, l - 1, r);
+            cur.pop_back();
         }
         if (r > l)
         {
-            s2 = s + ')';
-            generate(l, r - 1, s2);
+            cur += ')';
+            generate(res, cur, l, r - 1);;
+            cur.pop_back();
         }
     }
-};
 
-int main()
-{
-    Solution s;
-    vector<string> r;
-    r = s.generateParenthesis(4);
-    int i;
-    for(i = 0; i < r.size(); ++i)
-        cout<<"\""<<r[i]<<"\",";
-    cout<<endl;
-}
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        string cur;
+        generate(res, cur, n, n);
+        return res;
+    }
+};

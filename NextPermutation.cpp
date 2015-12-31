@@ -1,18 +1,13 @@
 class Solution {
 public:
-    void nextPermutation(vector<int> &num) {
-        int k, l, t;
-        for (k = num.size() - 2; k >= 0; --k)
-            if (num[k] < num[k + 1]) break;
-        if (k < 0)
-        {
-            reverse(num.begin(), num.end());
-            return;
-        }
-        for (l = num.size() - 1; l > k; --l)
-            if (num[l] > num[k]) break;
-        swap(num[l], num[k]);
-        reverse(num.begin() + k + 1, num.end());
-        return;
+    void nextPermutation(vector<int>& nums) {
+        int i, j, k, l;
+        for (k = nums.size() - 2; k >= 0; --k)
+            if (nums[k] < nums[k + 1]) break;
+        if (k < 0) {reverse(nums.begin(), nums.end()); return;}
+        for (l = nums.size() - 1; l > k; --l)
+            if (nums[l] > nums[k]) break;
+        swap(nums[l], nums[k]);
+        reverse(nums.begin() + k + 1, nums.end());
     }
 };

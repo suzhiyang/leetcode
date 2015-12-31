@@ -1,36 +1,16 @@
-#include <iostream>
-#include <vector>
-#include <string>
-
-using namespace std;
-
 class Solution {
 public:
-    string longestCommonPrefix(vector<string> &strs) {
+    string longestCommonPrefix(vector<string>& strs) {
+        int i, j, l = 0;
         if (strs.size() == 0) return "";
-        if (strs.size() == 1) return strs[0];
-        string prefix;
-        int p = 0;
-        while(1)
+        for (i = 0; i < strs.size(); ++i)
+            if (strs[i].size() < strs[l].size()) l = i;
+        for (i = 0; i < strs[l].size(); ++i)
         {
-            for (int i = 1; i < strs.size(); ++i)
-            {
-                if (!(p < strs[i].size() && p < strs[0].size() && strs[i][p] == strs[0][p]))
-                    return prefix;
-            }
-            prefix += strs[0][p];
-            ++p;
+            for (j = 0; j < strs.size(); ++j)
+                if (strs[j][i] != strs[l][i]) break;
+            if (j < strs.size()) break;
         }
-        return prefix;
+        return strs[l].substr(0, i);
     }
 };
-
-int main()
-{
-    vector<string> v;
-    v.push_back("abc");
-//    v.push_back("abdkkjk");
-//    v.push_back("ab");
-    Solution s;
-    cout<<s.longestCommonPrefix(v)<<endl;
-}

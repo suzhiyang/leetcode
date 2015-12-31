@@ -1,46 +1,23 @@
-#include <iostream>
-
-using namespace std;
-
 class Solution {
 public:
-    bool search(int A[], int n, int target) {
-        int left = 0, right = n - 1, mid;
-        while(left <= right)
+    bool search(vector<int>& nums, int target) {
+        int l = 0, r = nums.size() - 1, m;
+        while(l < r)
         {
-            mid = (left + right) / 2;
-            if (target == A[mid]) return true;
-            if (A[mid] > A[left]) // [left, mid] is sorted
+            m = l + (r - l) / 2;
+            if (target == nums[m]) return true;
+            if (nums[m] < nums[r])
             {
-                if (target < A[mid])
-                {
-                    if (target >= A[left]) right = mid - 1;
-                    else left = mid + 1;
-                }
-                else left = mid + 1;
+                if (target > nums[m] && target <= nums[r]) l = m + 1;
+                else r = m - 1;
             }
-            else if (A[mid] == A[left]) ++left;
-            else // [mid, right] is sorted
+            else if (nums[m] > nums[r])
             {
-                if (target > A[mid])
-                {
-                    if (target <= A[right]) left = mid + 1;
-                    else right = mid - 1;
-                }
-                else right = mid - 1;
+                if (target >= nums[l] && target < nums[m]) r = m - 1;
+                else l = m + 1;
             }
+            else --r;
         }
         return false;
     }
 };
-
-int main()
-{
-    int a[] = {1,5,1,1,1,1,1,1,1,1};
-    Solution s;
-    int b[] = {1,2,5};
-    for(int i = 0; i < sizeof(b) / 4; ++i)
-    {
-        cout<<b[i]<<":"<<s.search(a, 10, b[i])<<endl;
-    }
-}

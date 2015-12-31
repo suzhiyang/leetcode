@@ -1,54 +1,47 @@
-#include <iostream>
 #include <vector>
-#include <functional>
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
 class Solution {
 public:
-    vector<vector<int> > r;
-    int m_target;
-    vector<vector<int> > combinationSum(vector<int> &candidates, int target) {
-        r.clear();
-        sort(candidates.begin(), candidates.end());
-        vector<int> cur;
-        m_target = target;
-        int sum = 0;
-        dfs(candidates, 0, sum, cur);
-        return r;
-    }
-
-    void dfs(vector<int> &candidates, int pos, int sum, vector<int> &cur)
+    void dfs(vector<vector<int> > &r, vector<int> &cur, vector<int> &c, int si, int sum, int target)
     {
-        int i;
-        if (sum > m_target) return;
-        else if (sum == m_target) r.push_back(cur);
-        else
+        if (sum == target)
+            r.push_back(cur);
+        else if (sum < target)
         {
-            for(i = pos; i < candidates.size(); ++i)
+            int i;
+            for (i = si; i < c.size(); ++i)
             {
-                sum += candidates[i];
-                cur.push_back(candidates[i]);
-                dfs(candidates, i, sum, cur);
+                cur.push_back(c[i]);
+                dfs(r, cur, c, i, sum + c[i], target);
                 cur.pop_back();
-                sum -= candidates[i];
             }
         }
+    }
+    
+    vector<vector<int> > combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int> > r;
+        vector<int> cur;
+        sort(candidates.begin(), candidates.end());
+        dfs(r, cur, candidates, 0, 0, target);
+        return r;
     }
 };
 
 int main()
 {
-    Solution s;
-    int a[] = {2,3,6,7};
-    vector<int> v(a, a + sizeof(a) / sizeof(a[0]));
+    Solution sol;
     vector<vector<int> > r;
-    r = s.combinationSum(v, 7);
-    int i, j;
-    for(i = 0; i < r.size(); ++i)
+    int a[] = {2,3,6,7}, i, j;
+    vector<int> v(a, a + 4);
+    r = sol.combinationSum(v, 7);
+    for (i = 0; i < r.size(); ++i)
     {
-        for(j = 0; j < r[i].size(); ++j)
-            cout<<r[i][j]<<" ";
+        for (j = 0; j < r[i].size(); ++j)
+            cout<<r[i][j]<<",";
         cout<<endl;
     }
 }

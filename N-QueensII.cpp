@@ -1,64 +1,54 @@
-#include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
+#include <iostream>
 
 using namespace std;
 
 class Solution {
-private:
-    vector<int> pos;
-    int count;
-    int expectn;
 public:
-    bool check(int k)
+    int c;
+    bool check(vector<string> &cur, int x, int y)
     {
-        int i;
-        for (i = 0; i < k; ++i)
-        {
-            if (pos[i] == pos[k] || pos[i] - pos[k] == k - i
-                || pos[k] - pos[i] == k - i) return false;
-        }
+        int i, j;
+        for (i = 0; i < cur.size(); ++i)
+            if (i != x && cur[i][y] == 'Q') return false;
+        for (i = x - 1, j = y - 1; i >= 0 && j >= 0; --i, --j)
+            if (cur[i][j] == 'Q') return false;
+        for (i = x - 1, j = y + 1; i >= 0 && j < cur.size(); --i, ++j)
+            if (cur[i][j] == 'Q') return false;
+        for (i = x + 1, j = y - 1; i < cur.size() && j >= 0; ++i, --j)
+            if (cur[i][j] == 'Q') return false;
+        for (i = x + 1, j = y + 1; i < cur.size() && j < cur.size(); ++i, ++j)
+            if (cur[i][j] == 'Q') return false;
         return true;
     }
     
-    void solve(int k)
+    void fill(vector<string> &cur, int x)
     {
-        if (k == expectn)
-            ++count;
-        else
+        int i;
+        for (i = 0; i < cur.size(); ++i)
         {
-            int i;
-            for (i = 0; i < expectn; ++i)
+            if (check(cur, x, i))
             {
-                pos[k] = i;
-                if (check(k)) solve(k + 1);
+                cur[x][i] = 'Q';
+                if (x == cur.size() - 1) ++c;
+                else fill(cur, x + 1);
+                cur[x][i] = '.';
             }
         }
     }
-    
+
     int totalNQueens(int n) {
-        if (n == 1) return 1;
-        else if (n == 2 || n == 3) return 0;
-        else
-        {
-            pos.clear();
-            int i;
-            for (i = 0; i < n; ++i)
-                pos.push_back(0);
-            count = 0;
-            expectn = n;
-            solve(0);
-        }
-        return count;
-    }
+        c = 0;
+        vector<string> cur(n, string(n, '.'));
+        fill(cur, 0);
+        return c;
+    };
 };
 
 int main()
 {
     Solution s;
-    int i;
-    for (i = 1; i < 10; ++i)
-    {
+    for (int i = 0; i < 10; ++i)
         cout<<i<<" "<<s.totalNQueens(i)<<endl;
-    }
 }

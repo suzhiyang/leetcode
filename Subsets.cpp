@@ -1,53 +1,28 @@
-#include <iostream>
 #include <vector>
-#include <algorithm>
-
 using namespace std;
 
-/* The subsets could be mapped to binary bits:
- * 000 001 010 ...
- */
 class Solution {
 public:
-    vector<vector<int> > subsets(vector<int> &S) {
-        vector<vector<int> > result;
-        sort(S.begin(), S.end());
-        int c, tmp;
-        vector<int> mask;
-        mask.push_back(1);
-        for (c = 1; c < S.size(); ++c)
+    vector<vector<int> > generate(vector<int> &nums, int index)
+    {
+        vector<vector<int> > r, sub;
+        if (index == nums.size())
         {
-            tmp = mask[c - 1] * 2;
-            mask.push_back(tmp);
+            r.push_back(vector<int>());
         }
-        for (c = 0; c < mask[mask.size() - 1] * 2; ++c)
+        else
         {
-            vector<int> ss; //subset
-            for (int i = 0; i < mask.size(); ++i)
-            {
-//                int flag = c & mask[mask.size() - 1 - i];
-                if ((c & mask[mask.size() - 1 - i]) > 0) ss.push_back(S[i]);
-            }
-            result.push_back(ss);
+            sub = generate(nums, index + 1);
+            r.insert(r.begin(), sub.begin(), sub.end());
+            for (int i = 0 ; i < sub.size(); ++i)
+                sub[i].insert(sub[i].begin(), nums[index]);
+            r.insert(r.end(), sub.begin(), sub.end());
         }
-        return result;
+        return r;
+    }
+    
+    vector<vector<int> > subsets(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        return generate(nums, 0);
     }
 };
-
-int main()
-{
-    Solution s;
-    int a[] = {3, 4, 1, 2};
-    vector<int> t(a, a + 4);
-    vector<vector<int> > r = s.subsets(t);
-    for (int i = 0; i < r.size(); ++i)
-    {
-        cout<<"[";
-        for(int j = 0; j < r[i].size(); ++j)
-        {
-            cout<<r[i][j]<<",";
-        }
-        cout<<"]"<<endl;
-    }
-    return 0;
-}

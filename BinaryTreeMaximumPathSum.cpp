@@ -1,63 +1,55 @@
 #include <iostream>
+#include "ds.h"
 
 using namespace std;
 
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
-
-/**
- * Definition for binary tree
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
- */
 class Solution {
+private:
+    int maxsum;
 public:
-    int maxPathSum(TreeNode *root) {
-        int maxacrossroot = INT_MIN;
-        int pathsum = getmax(root, maxacrossroot);
-        return max(pathsum, maxacrossroot);
-    }
-
-    int getmax(TreeNode *root, int &maxacrossroot)
+    int dfs(TreeNode *root)
     {
+        int rootmax = root->val, lmax = INT_MIN, rmax = INT_MIN, t;
+        if (root->left != NULL) lmax = dfs(root->left);
+        maxsum = max(lmax, maxsum);
+        if (root->right != NULL) rmax = dfs(root->right);
+        maxsum = max(rmax, maxsum);
+        t = root->val;
+        if (lmax > 0) t += lmax;
+        if (rmax > 0) t += rmax;
+        maxsum = max(t, maxsum);
+        if (max(lmax, rmax) > 0) rootmax += max(lmax, rmax);
+        return rootmax;
+    }
+    
+    int maxPathSum(TreeNode* root) {
         if (root == NULL) return 0;
-        int left, right, acrossroot;
-        left = getmax(root->left, maxacrossroot);
-        right = getmax(root->right, maxacrossroot);
-        acrossroot = root->val;
-        if (left > 0) acrossroot += left;
-        if (right > 0) acrossroot += right;
-        if (acrossroot > maxacrossroot) maxacrossroot = acrossroot;
-        return max(root->val, max(root->val + left, root->val + right));
+        maxsum = root->val;
+        dfs(root);
+        return maxsum;
     }
 };
 
 int main()
 {
-    Solution s;
-    //                       1
-    //                     /   \
-    //                    2     3
-    //                   / \   / \
-    //                  7   6 300 200
-    //                 /
-    //                8
-    TreeNode *root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->left->left = new TreeNode(7);
-    root->left->left->left = new TreeNode(8);
-    root->left->right = new TreeNode(6);
-    root->right = new TreeNode(3);
-    root->right->left = new TreeNode(300);
-    root->right->right = new TreeNode(200);
-    cout<<s.maxPathSum(root)<<endl;
-    return 0;
+    Solution sol;
+    TreeNode *tc1 = new TreeNode(2);
+    tc1->left = new TreeNode(9);
+    tc1->right = new TreeNode(7);
+    tc1->left->left = new TreeNode(-3);
+    tc1->left->right = new TreeNode(-2);
+    tc1->right->right = new TreeNode(8);
+    TreeNode *tc2 = new TreeNode(-3);
+    TreeNode *tc3 = new TreeNode(5);
+    tc3->left = new TreeNode(4);
+    tc3->right = new TreeNode(8);
+    tc3->left->left = new TreeNode(11);
+    tc3->right->left = new TreeNode(13);
+    tc3->right->right = new TreeNode(4);
+    tc3->left->left->left = new TreeNode(7);
+    tc3->left->left->right = new TreeNode(2);
+    tc3->right->right->right = new TreeNode(1);
+    cout<<sol.maxPathSum(tc1)<<endl;
+    cout<<sol.maxPathSum(tc2)<<endl;
+    cout<<sol.maxPathSum(tc3)<<endl;
 }

@@ -1,25 +1,9 @@
-#include <iostream>
-
-using namespace std;
-
 class Solution {
 public:
-    int removeElement(int A[], int n, int elem) {
-        int currentpos = 0, i;
-        for(i = 0; i < n; ++i)
-        {
-            if (A[i] != elem) A[currentpos++] = A[i];
-        }
-        return currentpos;
+    int removeElement(vector<int>& nums, int val) {
+        int i, j = 0;
+        for (i = 0; i < nums.size(); ++i)
+            if (nums[i] != val) nums[j++] = nums[i];
+        return j;
     }
 };
-
-int main()
-{
-    int a[] = {2,1,5,2,3}, len;
-    Solution s;
-    len = s.removeElement(a, 5, 2);
-    for(int i = 0; i < len; ++i)
-        cout<<a[i]<<",";
-    cout<<endl;
-}

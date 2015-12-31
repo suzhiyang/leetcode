@@ -1,45 +1,25 @@
-#include <string>
-#include <iostream>
-
-using namespace std;
-
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
-        int m = 0, i, j, start = 0;
-        int dict[300];
-        for (i = 0; i < 300; ++i)
-            dict[i] = -1;
-        for (i = 0; i < s.size(); ++i)
+        int h[260] = {0};
+        int mx = 0, l = 0, r = 0;
+        for (r = 0; r < s.size(); ++r)
         {
-            if (dict[s[i]] == -1)
-                dict[s[i]] = i;
+            if (h[s[r]] == 0)
+            {
+                h[s[r]] = 1;
+                if (r - l + 1> mx) mx = r - l + 1;
+            }
             else
             {
-                if (i - start > m) m = i - start;
-                for (j = start; j < dict[s[i]]; ++j)
-                    dict[s[j]] = -1;
-                start = dict[s[i]] + 1;
-                dict[s[i]] = i;
+                while(s[l] != s[r])
+                {
+                    h[s[l]] = 0;
+                    ++l;
+                }
+                ++l;
             }
         }
-        if (i - start > m) m = i - start;
-        return m;
+        return mx;
     }
 };
-
-int main()
-{
-    Solution s;
-    string str;
-    str = "abcabcbb";
-    cout<<str<<":"<<s.lengthOfLongestSubstring(str)<<endl;
-    str = "b";
-    cout<<str<<":"<<s.lengthOfLongestSubstring(str)<<endl;
-    str = "abbbcde";
-    cout<<str<<":"<<s.lengthOfLongestSubstring(str)<<endl;
-    str = "acdvda";
-    cout<<str<<":"<<s.lengthOfLongestSubstring(str)<<endl;
-    str = "dcdvcuyda";
-    cout<<str<<":"<<s.lengthOfLongestSubstring(str)<<endl;
-}

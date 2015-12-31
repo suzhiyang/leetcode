@@ -1,73 +1,44 @@
-#include <iostream>
-#include <map>
-#include <vector>
-
-using namespace std;
-/**
- * Definition for a point.
- * struct Point {
- *     int x;
- *     int y;
- *     Point() : x(0), y(0) {}
- *     Point(int a, int b) : x(a), y(b) {}
- * };
- */
-struct Point {
-    int x;
-    int y;
-    Point() : x(0), y(0) {}
-    Point(int a, int b) : x(a), y(b) {}
-};
-
 class Solution {
 public:
-    int maxPoints(vector<Point> &points) {
+    int gcd(int a, int b)
+    {
+        int c;
+        while(a != 0)
+        {
+            c = a;
+            a = b % a;
+            b = c;
+        }
+        return b;
+    }
+    
+    int maxPoints(vector<Point>& points) {
         if (points.size() == 0) return 0;
-        map<double, int> slopemap;
-        int i, j, max = 0;
-        double k;
+        int i, j, r = 1;
         for (i = 0; i < points.size(); ++i)
         {
-            slopemap.clear();
-            int dup = 0, y = 0;
-            int pmax = 0;
+            map<pair<int, int>, int> h;
+            int cnt = 1, lmax = 0;
             for (j = i + 1; j < points.size(); ++j)
             {
-                if (points[i].x == points[j].x && points[i].y == points[j].y) ++dup;
-                else if (points[i].x == points[j].x && points[i].y != points[j].y) ++y;
-                else
+                if (points[j].x == points[i].x && points[j].y == points[i].y)
                 {
-                    k = ((double)(points[j].y - points[i].y)) / (points[j].x - points[i].x);
-                    if (slopemap.find(k) != slopemap.end()) ++slopemap[k];
-                    else
-                    {
-                        slopemap.insert(make_pair(k, 1));
-                    }
-                    if (slopemap[k] > pmax) pmax = slopemap[k];
+                    ++cnt; continue;
                 }
+                int a, b, g;
+                a = points[j].y - points[i].y;
+                b = points[j].x - points[i].x;
+                if (a && b)
+                {
+                    g = gcd(a, b);
+                    a /= g; b /= g;
+                }
+                else if (a != 0 && b == 0) a = 1;
+                else if (a == 0 && b != 0) b = 1;
+                lmax = max(lmax, ++h[make_pair(a, b)]);
             }
-            if (y + dup > max) max = y + dup;
-            if (pmax + dup > max) max = pmax + dup;
+            r = max(r, lmax + cnt);
         }
-        return max + 1;
+        return r;
     }
 };
-
-int main()
-{
-    vector<Point> points;
-    points.push_back(Point(0,0));
-    points.push_back(Point(1,1));
-    points.push_back(Point(0,0));
-//     points.push_back(Point(1,1));
-//     points.push_back(Point(1,2));
-//     points.push_back(Point(1,1));
-//     points.push_back(Point(1,3));
-//     points.push_back(Point(2,1));
-//     points.push_back(Point(2,2));
-//     points.push_back(Point(3,3));
-//     points.push_back(Point(3,1));
-    Solution s;
-    cout<<s.maxPoints(points)<<endl;
-    return 0;
-}

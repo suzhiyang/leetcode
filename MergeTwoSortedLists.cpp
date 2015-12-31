@@ -1,45 +1,33 @@
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
 class Solution {
 public:
-    ListNode *mergeTwoLists(ListNode *a, ListNode *b) {
-        ListNode *pa = a, *pb = b, *head = NULL, *tail;
-        if (a == NULL) return b;
-        else if (b == NULL) return a;
-        if (pa->val > pb->val)
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        ListNode *h = NULL, *tail = NULL, *p1 = l1, *p2 = l2;
+        if (l1 == NULL && l2 == NULL) return NULL;
+        while(p1 != NULL && p2 != NULL)
         {
-            head = pb;
-            pb = pb->next;
-        }
-        else
-        {
-            head = pa;
-            pa = pa->next;
-        }
-        tail = head;
-        while(pa != NULL && pb != NULL)
-        {
-            if (pa->val > pb->val)
+            if (p1->val < p2->val)
             {
-                tail->next = pb;
-                pb = pb->next;
+                if (h == NULL) {h = p1; tail = p1;}
+                else {tail->next = p1; tail = p1;}
+                p1 = p1->next;
             }
             else
             {
-                tail->next = pa;
-                pa = pa->next;
+                if (h == NULL) {h = p2; tail = p2;}
+                else {tail->next = p2; tail = p2;}
+                p2 = p2->next;
             }
-            tail = tail->next;
         }
-        if (pa == NULL) tail->next = pb;
-        else tail->next = pa;
-        return head;
+        if (p1 == NULL && p2 != NULL)
+        {
+            if (h == NULL) return p2;
+            else tail->next = p2;
+        }
+        else
+        {
+            if (h == NULL) return p1;
+            else tail->next = p1;
+        }
+        return h;
     }
-
 };

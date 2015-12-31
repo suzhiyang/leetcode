@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include <vector>
 
 using namespace std;
@@ -6,30 +7,49 @@ using namespace std;
 class Solution {
 public:
     int maxProfit(int k, vector<int>& prices) {
-        if (k == 1000000000) return 1648961;
-        int i, j, diff;
-        if (prices.size() < 2) return 0;
-        vector<int> l(k + 1, 0), g(k + 1, 0);
-        for (i = 1; i < prices.size(); ++i)
+        if (prices.size() == 0) return 0;
+        int i, j, n = prices.size(), t;
+
+        if (k >= n / 2)
         {
-            diff = prices[i] - prices[i - 1];
-            for (j = k; j > 0; --j)
+            int r = 0;
+            for (i = 1; i < n; ++i)
+                if (prices[i] > prices[i - 1]) r += prices[i] - prices[i - 1];
+            return r;
+        }
+        
+        int **dp = new int*[n];
+        for (i = 0; i < n; ++i)
+        {
+            dp[i] = new int[k + 1];
+            memset(dp[i], 0, sizeof(int) * (k + 1));
+        }
+        for (j = 1; j <= k; ++j)
+        {
+            t = -prices[0];
+            for (i = 1; i < n; ++i)
             {
-                l[j] = max(g[j - 1] + max(diff, 0), l[j] + diff);
-                g[j] = max(g[j], l[j]);
-//                cout<<i<<":"<<j<<" "<<l[j]<< " - "<<g[j]<<endl;
-//                 l[i][j] = max(g[i - 1][j - 1] + max(diff, 0), l[i - 1][j] + diff);
-//                 g[i][j] = max(g[i - 1][j], l[i][j]);
+                dp[i][j] = max(dp[i][j - 1], dp[i - 1][j]);
+                dp[i][j] = max(dp[i][j], prices[i] + t);
+                t = max(t, dp[i][j - 1] - prices[i]);
             }
         }
-        return g[k];
+        // for (j = 0; j <= k; ++j)
+        // {
+        //     for (i = 0; i < n; ++i)
+        //         cout<<dp[i][j]<<",";
+        //     cout<<endl;
+        // }
+        return dp[n - 1][k];
     }
 };
 
 int main()
 {
-    Solution s;
-    int a[] = {10, 1, 3, 4, 1, 11, 7, 15};
-    vector<int> prices(a, a + sizeof(a) / sizeof(a[0]));
-    cout<<s.maxProfit(1000000000, prices)<<endl;
+    int a[] = {1,2,4,2,5,7,2,4,9,0,9};
+    vector<int> p(a, a + sizeof(a) / sizeof(int));
+    cout<<Solution().maxProfit(2, p)<<endl;
+    int b[] = {1,2,4,2,5,7,2,4,9,0};
+    p.assign(b, b + sizeof(b) / sizeof(int));
+    cout<<Solution().maxProfit(4, p)<<endl;
 }

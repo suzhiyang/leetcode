@@ -1,27 +1,13 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
-    bool canJump(int A[], int n) {
-        vector<int> v(n, 0);
-        int i, j;
-        for(i = 1; i < n; ++i)
+    bool canJump(vector<int>& nums) {
+        int canreach = 0, i;
+        for (i = 0; i < nums.size(); ++i)
         {
-            v[i] = max(v[i - 1], A[i - 1]) - 1;
-            if (v[i] < 0) return false;
+            if (i > canreach) return false;
+            canreach = max(canreach, i + nums[i]);
         }
-        return true;
+        if (canreach >= nums.size() - 1) return true;
+        return false;
     }
 };
-
-int main()
-{
-    int a[] = {2,3,1,1,4};
-    int b[] = {3,2,1,0,4};
-    Solution s;
-    cout<<s.canJump(a, 5)<<endl;
-    cout<<s.canJump(b, 5)<<endl;
-}

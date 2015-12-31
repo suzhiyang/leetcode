@@ -1,70 +1,30 @@
-#include <iostream>
-
-using namespace std;
-
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
-};
-
-void outputlist(ListNode *h)
-{
-    ListNode *p = h;
-    while(p != NULL)
-    {
-        cout<<p->val<<",";
-        p = p->next;
-    }
-    cout<<endl;
-}
-
 class Solution {
 public:
-    ListNode *reverse(ListNode *head)
-    {
-        ListNode *l = head, *newhead = NULL, *t;
-        while(l != NULL)
-        {
-            t = l->next;
-            l->next = newhead;
-            newhead = l;
-            l = t;
-        }
-        return newhead;
-    }
-    
     bool isPalindrome(ListNode* head) {
-        ListNode *l = head, *f = head;
-        while(f != NULL)
+        if (head == NULL || head->next == NULL) return true;
+        ListNode dummy(0);
+        ListNode *tail = &dummy, *slow = head, *fast = head, *tmp;
+        while(fast->next && fast->next->next)
         {
-            l = l->next;
-            if (f->next != NULL) f = f->next->next;
-            else break;
+            slow = slow->next;
+            fast = fast->next->next;
         }
-        ListNode *pal = reverse(l);
-        l = head;
-        while(l != NULL && pal != NULL)
+        ListNode *p = slow->next;
+        slow->next = NULL;
+        while(p != NULL)
         {
-            if (l->val != pal->val) return false;
-            l = l->next;
-            pal = pal->next;
+            tmp = p->next;
+            p->next = tail->next;
+            tail->next = p;
+            p = tmp;
+        }
+        ListNode *rp = dummy.next;
+        p = head;
+        while(rp != NULL)
+        {
+            if (rp->val != p->val) return false;
+            rp = rp->next; p = p->next;
         }
         return true;
     }
 };
-
-int main()
-{
-    Solution s;
-    ListNode *h = new ListNode(1), *r;
-    h->next = new ListNode(2);
-    h->next->next = new ListNode(3);
-    h->next->next->next = new ListNode(4);
-    h->next->next->next->next = new ListNode(2);
-    h->next->next->next->next->next = new ListNode(1);
-//     outputlist(h);
-//     r = s.reverse(h);
-//     outputlist(r);
-    cout<<s.isPalindrome(h)<<endl;
-}

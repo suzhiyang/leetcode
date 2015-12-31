@@ -1,28 +1,28 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
-    int findMin(vector<int> &num) {
-        int left = 0, right = num.size() - 1, mid;
-        while(left <= right)
+    int findMin(vector<int>& nums) {
+        int l = 0, r = nums.size() - 1, m;
+        while(l < r)
         {
-            mid = (left + right) / 2;
-            if (num[mid] < num[right]) right = mid;
-            else if (num[mid] > num[right]) left = mid + 1;
-            else right -= 1;
+            m = l + (r - l) / 2;
+            if (nums[l] == nums[m] && nums[l] == nums[r]) return seqsearch(nums, l, r);
+            else if (nums[l] < nums[m])
+            {
+                if (nums[m] <= nums[r]) r = m - 1;
+                else l = m + 1;
+            }
+            else if (nums[l] > nums[m]) r = m;
+            else if (nums[m] > nums[r]) l = m + 1; //else case: nums[l] == nums[m]
+            else if (nums[m] < nums[r]) break;
         }
-        return num[mid];
+        return nums[l];
+    }
+
+    int seqsearch(vector<int> &nums, int l, int r)
+    {
+        int ret = nums[l], i;
+        for (i = l + 1; i <= r; ++i)
+            ret = min(ret, nums[i]);
+        return ret;
     }
 };
-
-int main()
-{
-    Solution s;
-    int a[] = {2, 1, 1, 2, 2, 2, 2};
-//    int a[] = {4, 5, 6, 7, 0, 1, 2};
-    vector<int> v(a, a + 7);
-    cout<<s.findMin(v)<<endl;
-}

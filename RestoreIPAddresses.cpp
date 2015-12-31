@@ -1,69 +1,43 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <cstdlib>
 
 using namespace std;
 
 class Solution {
 public:
-    vector<string> restore(string s, int segcount)
+    void dfs(vector<string> &r, string &s, string cur, int pos, int num, int dots)
     {
-        vector<string> r;
-        int n;
-        if (segcount == 1)
+//        cout<<cur<<endl;
+        if (pos >= s.size())
         {
-            n = atoi(s.c_str());
-            if (s.size() > 1 && s[0] == '0') return r;
-            if (n >= 0 && n <= 255)
-                r.push_back(s);
-            return r;
+            if (dots == 3 && num >= 0 && num <= 255 && cur.size() > 0 && *cur.rbegin() != '.')
+                r.push_back(cur);
         }
-        string prestr, poststr;
-        for (int i = 1; i <= 3 && i <= s.size(); ++i)
+        else
         {
-            prestr = s.substr(0, i);
-            if (i > 1 && s[0] == '0') break;
-            n = atoi(prestr.c_str());
-            if (n >= 0 && n <= 255)
-            {
-                poststr = s.substr(i);
-                if (poststr == "") break;
-                vector<string> t = restore(poststr, segcount - 1);
-                if (!t.empty())
-                {
-                    for (int j = 0; j < t.size(); ++j)
-                    {
-                        string tempstr = prestr + "." + t[j];
-                        r.push_back(tempstr);
-                    }
-                }
-            }
+            if (cur.size() > 0 && *cur.rbegin() != '.') dfs(r, s, cur + ".", pos, 0, dots + 1);
+            if (cur.size() > 0 && *cur.rbegin() == '0' && num == 0) return;
+            num = num * 10 + s[pos] - '0';
+            if (num > 255) return;
+            dfs(r, s, cur + s[pos], pos + 1, num, dots);
         }
-        return r;
     }
     
     vector<string> restoreIpAddresses(string s) {
-        return restore(s, 4);
+        vector<string> r;
+        if (s.size() > 12) return r;
+        dfs(r, s, string(), 0, 0, 0);
+        return r;
     }
 };
 
 int main()
 {
-    string str = "25525511135";
     Solution s;
-    vector<string> r = s.restoreIpAddresses(str);
+    vector<string> r;
+//    r = s.restoreIpAddresses("25525511135");
+    r = s.restoreIpAddresses("010010");
     for (int i = 0; i < r.size(); ++i)
         cout<<r[i]<<endl;
-
-    str = "0000";
-    r = s.restoreIpAddresses(str);
-    for (int i = 0; i < r.size(); ++i)
-        cout<<r[i]<<endl;
-
-    str = "010010";
-    r = s.restoreIpAddresses(str);
-    for (int i = 0; i < r.size(); ++i)
-        cout<<r[i]<<endl;
-    return 0;
-}
+}   

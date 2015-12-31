@@ -1,53 +1,43 @@
-#include <iostream>
-#include <stack>
 #include <string>
+#include <stack>
+#include <iostream>
 
 using namespace std;
 
 class Solution {
 public:
     int longestValidParentheses(string s) {
-        stack<pair<char, int> > charstack;
-        int max = 0, i, startpos = 0, t;
+        stack<int> stk;
+        int i;
         for (i = 0; i < s.size(); ++i)
         {
-            switch(s[i])
+            if (s[i] == '(') stk.push(i);
+            else
             {
-                case '(':
-                    charstack.push(make_pair('(', i));
-                    break;
-                case ')':
-                    if (charstack.empty())
-                        startpos = i + 1;
-                    else
-                    {
-                        pair<char, int> temp = charstack.top();
-                        charstack.pop();
-                        if (!charstack.empty())
-                            t = i - charstack.top().second;
-                        else
-                            t = i - startpos + 1;
-                        if (t > max) max = t;
-                    }
+                if (!stk.empty() && s[stk.top()] == '(') stk.pop();
+                else stk.push(i);
             }
         }
-        return max;
+        int r = 0, cur;
+        if (stk.empty()) r = s.size();
+        else
+        {
+            cur = stk.top(); stk.pop();
+            r = max(r, int(s.size() - cur - 1));
+            while(!stk.empty())
+            {
+                r = max(r, cur - stk.top() - 1);
+                cur = stk.top(); stk.pop();
+            }
+            r = max(r, cur);
+        }
+        return r;
     }
 };
 
 int main()
 {
-    string str = "(()";
     Solution s;
-    cout<<str<<" : "<<s.longestValidParentheses(str)<<endl;
-    str = ")()())";
-    cout<<str<<" : "<<s.longestValidParentheses(str)<<endl;
-    str = ")()())()(())";
-    cout<<str<<" : "<<s.longestValidParentheses(str)<<endl;
-    str = "))";
-    cout<<str<<" : "<<s.longestValidParentheses(str)<<endl;
-    str = "";
-    cout<<str<<" : "<<s.longestValidParentheses(str)<<endl;
-    str = "()()(()(";
-    cout<<str<<" : "<<s.longestValidParentheses(str)<<endl;
+    cout<<s.longestValidParentheses(")()())")<<endl;
+    cout<<s.longestValidParentheses("(()")<<endl;
 }

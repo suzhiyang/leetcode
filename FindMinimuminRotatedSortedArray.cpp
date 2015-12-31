@@ -1,28 +1,16 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
-    int findMin(vector<int> &num) {
-        int left = 0, right = num.size() - 1, mid;
-        while(left <= right)
+    int findMin(vector<int>& nums) {
+        int l = 0, r = nums.size() - 1, m;
+        while(l < r - 1)
         {
-            if (num[left] <= num[right]) return num[left];
-            mid = (left + right) / 2;
-            if (num[mid] < num[right]) right = mid;
-            else left = mid + 1;
+            m = l + (r - l) / 2;
+            if (nums[l] < nums[m] && nums[m] > nums[r])
+                l = m + 1;
+            else if (nums[l] > nums[m] && nums[m] < nums[r])
+                r = m;
+            else break;
         }
-        return num[left];
+        return min(nums[l], nums[r]);
     }
 };
-
-int main()
-{
-    Solution s;
-    int a[] = {2, 4, 5, 6, 7, 0, 1};
-//    int a[] = {4, 5, 6, 7, 0, 1, 2};
-    vector<int> v(a, a + 7);
-    cout<<s.findMin(v)<<endl;
-}

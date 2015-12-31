@@ -1,54 +1,38 @@
-#include <iostream>
 #include <vector>
-
 using namespace std;
 
 class Solution {
 public:
-    vector<vector<int> > fourSum(vector<int> &num, int target) {
-        vector<vector<int> > result;
-        if (num.size() < 4) return result;
-        int i, j, k, l, r, t;
-        sort(num.begin(), num.end());
-        for (i = 0; i < num.size() - 3; ++i)
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int> > res;
+        if (nums.size() < 4) return res;
+        int i, j, l, r, t, tmp;
+        sort(nums.begin(), nums.end());
+        for (i = 0; i < nums.size() - 3;)
         {
-            for(j = i + 1; j < num.size() - 2; ++j)
+            for (j = i + 1; j < nums.size() - 2;)
             {
-                l = j + 1; r = num.size() - 1;
+                l = j + 1; r = nums.size() - 1;
                 while(l < r)
                 {
-                    t = num[i] + num[j] + num[l] + num[r];
-                    if (t == target)
+                    t = target - nums[i] - nums[j];
+                    if (nums[l] + nums[r] == t)
                     {
-                        vector<int> v(1, num[i]);
-                        v.push_back(num[j]); v.push_back(num[l]); v.push_back(num[r]);
-                        result.push_back(v);
-                        while(l < r && num[l] == num[l + 1]) ++l;
-                        while(r > l && num[r] == num[r - 1]) --r;
-                        ++l; --r;
+                        vector<int> v(4, 0);
+                        v[0] = nums[i], v[1] = nums[j], v[2] = nums[l], v[3] = nums[r];
+                        res.push_back(v);
+                        while (l < r && nums[l] == v[2]) ++l;
+                        while (l < r && nums[r] == v[3]) --r;
                     }
-                    else if (t < target) ++l;
+                    else if (nums[l] + nums[r] < t) ++l;
                     else --r;
                 }
-                while(num[j] == num[j + 1]) ++j;
+                tmp = nums[j];
+                while (j < nums.size() - 2 && nums[j] == tmp) ++j;
             }
-            while(num[i] == num[i + 1]) ++i;
+            tmp = nums[i];
+            while (i < nums.size() - 3 && nums[i] == tmp) ++i;
         }
-        return result;
+        return res;
     }
 };
-
-int main()
-{
-    Solution s;
-    int a[] = {1, 0, -1, 0, -2, 2};
-    vector<int> num(a, a + sizeof(a) / sizeof(int));
-    vector<vector<int> > r = s.fourSum(num, 0);
-    int i, j;
-    for(i = 0; i < r.size(); ++i)
-    {
-        for(j = 0; j < r[i].size(); ++j)
-            cout<<r[i][j]<<",";
-        cout<<endl;
-    }
-}

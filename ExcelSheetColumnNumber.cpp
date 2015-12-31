@@ -1,23 +1,12 @@
-#include <iostream>
-
-using namespace std;
-
 class Solution {
 public:
     int titleToNumber(string s) {
-        int c = 0;
-        for(int i = 0; i < s.size(); ++i)
+        int r = 0, m = 1, i;
+        for (i = s.size() - 1; i >= 0; --i)
         {
-            c = c * 26 + s[i] - 'A' + 1;
+            r = r + (s[i] - 'A' + 1) * m;
+            m *= 26;
         }
-        return c;
+        return r;
     }
 };
-
-int main()
-{
-    Solution s;
-    cout<<s.titleToNumber("AA")<<endl;
-    cout<<s.titleToNumber("BA")<<endl;
-    cout<<s.titleToNumber("AAB")<<endl;
-}

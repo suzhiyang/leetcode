@@ -1,45 +1,22 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 class Solution {
 public:
-    int uniquePathsWithObstacles(vector<vector<int> > &obstacleGrid) {
-        int a[105][105];
-        int i, j;
-        int m = obstacleGrid.size(), n = obstacleGrid[0].size();
-        for(i = 0; i < m + 1; ++i)
-            a[0][m] = 0;
-        for(i = 0; i < n + 1; ++i)
-            a[n][0] = 0;
-        a[0][1] = 1;
-        for(i = 1; i < m + 1; ++i)
+    int uniquePathsWithObstacles(vector<vector<int> >& obstacleGrid) {
+        if (obstacleGrid.size() == 0) return 0;
+        int i, j, m = obstacleGrid.size(), n = obstacleGrid[0].size();
+        vector<vector<int> > dp(m, vector<int>(n, 0));
+        dp[0][0] = 1 - obstacleGrid[0][0];
+        for (i = 1; i < m; ++i)
+            if (obstacleGrid[i][0] == 1) dp[i][0] = 0;
+            else dp[i][0] = dp[i - 1][0];
+        for (j = 1; j < n; ++j)
+            if (obstacleGrid[0][j] == 1) dp[0][j] = 0;
+            else dp[0][j] = dp[0][j - 1];
+        for (i = 1; i < m; ++i)
         {
-            for(j = 1; j < n + 1; ++j)
-            {
-                if (obstacleGrid[i - 1][j - 1] == 1) a[i][j] = 0;
-                else a[i][j] = a[i - 1][j] + a[i][j - 1];
-            }
+            for (j = 1; j < n; ++j)
+                if (obstacleGrid[i][j] == 1) dp[i][j] = 0;
+                else dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
         }
-        return a[m][n];
+        return dp[m - 1][n - 1];
     }
 };
-
-int main()
-{
-    Solution s;
-    vector<vector<int> > o(3);
-    o[0].push_back(0);
-    o[0].push_back(0);
-    o[0].push_back(0);
-    
-    o[1].push_back(0);
-    o[1].push_back(1);
-    o[1].push_back(0);
-    
-    o[2].push_back(0);
-    o[2].push_back(0);
-    o[2].push_back(0);
-    cout<<s.uniquePathsWithObstacles(o)<<endl;
-}

@@ -1,45 +1,45 @@
-#include <iostream>
-#include <unordered_set>
 #include <string>
 #include <queue>
-
+#include <iostream>
+#include <unordered_set>
 using namespace std;
 
 class Solution {
 public:
-    int ladderLength(string start, string end, unordered_set<string> &dict) {
-        int l = 1, i, j;
-        dict.insert(end);
-        unordered_set<string>::iterator it;
-        it = dict.find(start);
-        if (it != dict.end()) dict.erase(it);
-        queue<string> d;
-        d.push(start);
-        d.push("");
-        while(!d.empty())
+    int ladderLength(string beginWord, string endWord, unordered_set<string>& wordList) {
+        int r = 1, i, j;
+        queue<string> q;
+        unordered_set<string> searched;
+        q.push(beginWord);
+        q.push("");
+        while(!q.empty())
         {
-            string cur = d.front();
-            d.pop();
-            if (cur == "")
+            string t = q.front();
+            q.pop();
+            if (t == "")
             {
-                ++l;
-                if (!d.empty()) d.push("");
-                continue;
+                if (q.empty()) break;
+                q.push("");
+                ++r;
             }
-            for (i = 0; i < start.size(); ++i)
+            else
             {
-                char t = cur[i];
-                for (j = 0; j < 26; ++j)
+                for (i = 0; i < t.size(); ++i)
                 {
-                    cur[i] = 'a' + j;
-                    if (dict.find(cur) != dict.end())
+                    int tmp = t[i];
+                    for (j = 'a'; j <= 'z'; ++j)
                     {
-                        if (cur == end) return l + 1;
-                        d.push(cur);
-                        dict.erase(cur);
+                        t[i] = j;
+                        if (t == endWord) return r + 1;
+                        if (searched.find(t) == searched.end() &&
+                            wordList.find(t) != wordList.end())
+                        {
+                            searched.insert(t);
+                            q.push(t);
+                        }
                     }
+                    t[i] = tmp;
                 }
-                cur[i] = t;
             }
         }
         return 0;
@@ -49,20 +49,9 @@ public:
 int main()
 {
     Solution s;
-    unordered_set<string> dict;
-//     dict.insert("hot");
-//     dict.insert("cog");
-//     dict.insert("dot");
-//     dict.insert("dog");
-//     dict.insert("hit");
-//     dict.insert("lot");
-//     dict.insert("log");
-//     cout<<s.ladderLength("hit", "cog", dict)<<endl;
-
-//    char d[][5] = {"miss","dusk","kiss","musk","tusk","diss","disk","sang","ties","muss"};
-    char d[][4] = {"hot", "dog"};
-    for (int i = 0; i < sizeof(d) / sizeof(d[0]); ++i)
-        dict.insert(d[i]);
-//    cout<<s.ladderLength("kiss", "tusk", dict)<<endl;
-    cout<<s.ladderLength("hot", "dog", dict)<<endl;
+    unordered_set<string> wordlist;
+    wordlist.insert("hot");
+    wordlist.insert("dog");
+    wordlist.insert("dot");
+    cout<<s.ladderLength("hot", "dog", wordlist)<<endl;
 }

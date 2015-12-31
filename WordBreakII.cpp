@@ -1,88 +1,84 @@
-#include <tr1/unordered_set>
-#include <vector>
 #include <string>
 #include <iostream>
-
+#include <vector>
+#include <unordered_set>
 using namespace std;
-using namespace std::tr1;
+void dfs(vector<string> &r, string cur, string &s, int pos, unordered_set<string> &dict)
+{
+    if (pos == s.size())
+    {
+        if (cur.back() == ' ') cur.pop_back();
+        r.push_back(cur);
+    }
+    else
+    {
+        int i;
+        for (i = pos; i < s.size(); ++i)
+        {
+            string t = s.substr(pos, i - pos + 1);
+            if (dict.find(t) != dict.end())
+            {
+                cur += t + " ";
+                dfs(r, cur, s, i + 1, dict);
+            }
+        }
+    }
+}
 
 class Solution {
 public:
-    vector<string> wordBreak(string s, unordered_set<string> &dict) {
-        // IMPORTANT: Please reset any member data you declared, as
-        // the same Solution instance will be reused for each test case.
-        int i = 0, j = 0, len = s.size();
-        vector<int> seg(len + 1, 0);
-        seg[0] = 1;
-        string sub;
-        unordered_set<string>::const_iterator it;
-        for (i = 1; i <= len; ++i)
+    void dfs(vector<string> &r, string cur, vector<vector<int> > &mark, string &s, int idx)
+    {
+        if (idx == 0)
+        {
+            r.push_back(cur);
+        }
+        else
+        {
+            for (auto j: mark[idx])
+            {
+                string t = s.substr(j, idx - j);
+                if (cur != "") t += " ";
+                dfs(r, t + cur, mark, s, j);
+            }
+        }
+    }
+    
+    vector<string> wordBreak(string s, unordered_set<string>& dict) {
+        vector<int> dp(s.size() + 1, 0);
+        vector<vector<int> > mark(s.size() + 1);
+        vector<string> r;
+        int i, j;
+        dp[0] = 1;
+        for (i = 1; i <= s.size(); ++i)
         {
             for (j = 0; j < i; ++j)
             {
-                sub = s.substr(j, i - j);
-                it = dict.find(sub);
-                if (it != dict.end() && seg[j] == 1)
+                if (dp[j])
                 {
-                    seg[i] = 1;
-                    break;
+                    string t = s.substr(j, i - j);
+                    if (dict.find(t) != dict.end())
+                    {
+                        dp[i] = 1;
+                        mark[i].push_back(j);
+                    }
                 }
             }
         }
-//         cout<<s<<endl;
-//         for (i = 1; i <= len; ++i)
-//             cout<<seg[i];
-//         cout<<endl;
-        vector<string> result = possiblesentences(seg, s, dict, len);
-        return result;
-    }
-
-    vector<string> possiblesentences(vector<int> &seg, string &s, unordered_set<string> &dict, int len)
-    {
-        int i, j;
-        vector<string> result;
-        if (len == 0)
-        {
-            result.push_back("");
-            return result;
-        }
-        for (i = len - 1; i >= 0; --i)
-        {
-            if (seg[i] == 0) continue;
-            string str = s.substr(i, len - i);
-//            cout<<"*["<<i<<","<<len<<"] "<<str<<endl;                
-            if (dict.find(str) != dict.end())
-            {
-                string suffix;
-                if (i != 0) suffix = " " + str;
-                else suffix = str;
-                vector<string> temp;
-                temp = possiblesentences(seg, s, dict, i);
-                vector<string>::iterator it;
-                for (it = temp.begin(); it != temp.end(); ++it)
-                {
-                    result.push_back(*it + suffix);
-                }
-            }
-        }
-        return result;
+        dfs(r, "", mark, s, s.size());
+        return r;
     }
 };
 
 int main()
 {
-    unordered_set<string> dict;
-    string str("catsanddog");
-    dict.insert("cat");
-    dict.insert("cats");
-    dict.insert("and");
-    dict.insert("sand");
-    dict.insert("dog");
     Solution s;
-    vector<string> result;
-    result = s.wordBreak(str, dict);
-    for (vector<string>::iterator it = result.begin(); it != result.end(); ++it)
-    {
-        cout<<*it<<endl;
-    }
+    vector<string> r;
+    unordered_set<string> dict;
+    dict.insert("a");
+    dict.insert("aa");
+    r = s.wordBreak("aaaa", dict);
+    for (auto k : r)
+        cout<<k<<",";
+    cout<<endl;
 }

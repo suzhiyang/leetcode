@@ -1,85 +1,56 @@
-#include <iostream>
-#include <vector>
 #include <string>
-#include <cstdlib>
-
+#include <cstring>
+#include <iostream>
 using namespace std;
 
 class Solution {
 public:
-    int numDecodings(string s) {
-        if (s == "") return 0;
-        vector<int> v(s.size() + 1);
-        v[s.size()] = 1;
-        if (s[s.size() - 1] == '0')
+    int d[10000];
+    
+    int ways(string &s, int i)
+    {
+        if (d[i] >= 0) return d[i];
+        if (i == s.size())
         {
-            v[s.size() - 1] = 0;
+            d[i] = 1;
+        }
+        else if (i == s.size() - 1)
+        {
+            if (s[i] == '0') d[i] = 0;
+            else d[i] = 1;
         }
         else
         {
-            v[s.size() - 1] = 1;
+            int t = (s[i] - '0') * 10 + s[i + 1] - '0';
+            if (t < 10) d[i] = 0;
+            else if (t >= 10 && t <= 26)
+                d[i] = ways(s, i + 1) + ways(s, i + 2);
+            else d[i] = ways(s, i + 1);
         }
-        int i = 0, lasttwo;
-        for (i = s.size() - 2; i >= 0; --i)
-        {
-            lasttwo = (s[i] - '0') * 10 + (s[i + 1] - '0');
-            if (s[i] == '0')
-            {
-                v[i] = 0;
-                continue;
-            }
-            if ((lasttwo > 10 && lasttwo < 20) || (lasttwo > 20 && lasttwo < 27))
-                v[i] = v[i + 1] + v[i + 2];
-            else if (lasttwo == 10 || lasttwo == 20)
-                v[i] = v[i + 2];
-            else
-                v[i] = v[i + 1];
-        }
-        
-        return v[0];
+        return d[i];
+    }
+    
+    int numDecodings(string s) {
+        if (s == "") return 0;
+        memset(d, -1, sizeof(d));
+        return ways(s, 0);
     }
 };
-
-int numDecodings(string s);
 
 int main()
 {
     Solution s;
-    string str = "1022";
-    cout<<str<<":"<<s.numDecodings(str)<<":"<<numDecodings(str)<<endl;
+    string str;
     str = "12";
-    cout<<str<<":"<<s.numDecodings(str)<<":"<<numDecodings(str)<<endl;
-    str = "122";
-    cout<<str<<":"<<s.numDecodings(str)<<":"<<numDecodings(str)<<endl;
-    str = "12022";
-    cout<<str<<":"<<s.numDecodings(str)<<":"<<numDecodings(str)<<endl;
-    str = "120222";
-    cout<<str<<":"<<s.numDecodings(str)<<":"<<numDecodings(str)<<endl;
-    str = "4757562545844617494555774581341211511296816786586787755257741178599337186486723247528324612117156948";
-    cout<<str<<":"<<s.numDecodings(str)<<":"<<numDecodings(str)<<endl;
-    return 0;
-}
-
-//////////////////////////////////////////////
-int numDecodings(string s) {
-    int r = 0, r1 = 0, r2 = 0;
-    string prestr;
-    if (s == "" || s[0] == '0') return 0;
-    if (s.size() == 1) return 1;
-    else if (s.size() == 2)
-    {
-        int n = atoi(s.c_str());
-        if (n >= 11 && n <= 19) return 2;
-        else if (n >= 21 && n <= 26) return 2;
-        else return 1;
-    }
-    r1 = numDecodings(s.substr(1));
-    if (s[0] == '1' || s[0] == '2')
-    {
-        prestr = s.substr(0, 2);
-        int n = atoi(prestr.c_str());
-        if (n > 0 && n < 26) r2 = numDecodings(s.substr(2));
-    }
-    r = r1 + r2;
-    return r;
+    cout<<str<<":"<<s.numDecodings(str)<<endl;
+    str = "1201";
+    cout<<str<<":"<<s.numDecodings(str)<<endl;
+    str = "213";
+    cout<<str<<":"<<s.numDecodings(str)<<endl;
+    str = "1213";
+    cout<<str<<":"<<s.numDecodings(str)<<endl;
+    str = "1513";
+    cout<<str<<":"<<s.numDecodings(str)<<endl;
+    str = "9371597631128776948387197132267188677349946742344217846154932859125134924241649584251978418763151253";
+    cout<<str<<":"<<s.numDecodings(str)<<endl;
 }

@@ -1,70 +1,59 @@
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 
 using namespace std;
 
+// class Solution {
+// public:
+//     vector<string> letterCombinations(string digits) {
+//         string n[10] = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+//         vector<string> r, sub;
+//         int i, j;
+//         if (digits.size() == 0) return r;
+//         else if (digits.size() == 1)
+//         {
+//             for (i = 0; i < n[digits[0] - '0'].size(); ++i)
+//             {
+//                 string str(1, char(n[digits[0] - '0'][i]));
+//                 r.push_back(str);
+//             }
+//             return r;
+//         }
+//         sub = letterCombinations(digits.substr(1));
+//         for (i = 0; i < n[digits[0] - '0'].size(); ++i)
+//             for (j = 0; j < sub.size(); ++j)
+//                 r.push_back(char(n[digits[0] - '0'][i]) + sub[j]);
+//         return r;
+//     }
+// };
+
 class Solution {
-private:
-    vector<string> m_d;
 public:
-    Solution()
-    {
-        m_d.assign(12, "");
-        m_d[2] = "abc";
-        m_d[3] = "def";
-        m_d[4] = "ghi";
-        m_d[5] = "jkl";
-        m_d[6] = "mno";
-        m_d[7] = "pqrs";
-        m_d[8] = "tuv";
-        m_d[9] = "wxyz";
-    }
     vector<string> letterCombinations(string digits) {
-        int i, l;
+        string n[10] = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
         vector<string> r, t;
-        if (digits == "")
+        if (digits.size() == 0) return r;
+        r.push_back("");
+        int i, j, k;
+        for (i = 0; i < digits.size(); ++i)
         {
-            r.push_back("");
-            return r;
-        }
-        if (digits.size() == 1)
-        {
-            for(i = 0; i < m_d[digits[0] - '0'].size(); ++i)
-                r.push_back(m_d[digits[0] - '0'].substr(i, 1));
-            return r;
-        }
-        t = letterCombinations(digits.substr(1));
-        l =  m_d[digits[0] - '0'].size();
-        for(i = 0; i < l; ++i)
-        {
-            for(vector<string>::iterator it = t.begin(); it != t.end(); ++it)
-            {
-                r.push_back(m_d[digits[0] - '0'][i] + *it);
-            }
+            vector<string> t;
+            for (j = 0; j < n[digits[i] - '0'].size(); ++j)
+                for (k = 0; k < r.size(); ++k)
+                    t.push_back(r[k] + n[digits[i] - '0'][j]);
+            r = t;
         }
         return r;
     }
 };
 
+
 int main()
 {
     Solution s;
-    string digits;
-    int i;
-    vector<string> r;
-    digits = "23";
-    cout<<digits<<endl;
-    r = s.letterCombinations(digits);
-    for(i = 0;i < r.size(); ++i)
-        cout<<r[i]<<endl;
+    vector<string> r = s.letterCombinations("23");
+    for (int i = 0; i < r.size(); ++i)
+        cout<<r[i]<<" ";
     cout<<endl;
-    cout<<"==================================="<<endl;
-    digits = "235";
-    cout<<digits<<endl;
-    r = s.letterCombinations(digits);
-    for(i = 0;i < r.size(); ++i)
-        cout<<r[i]<<endl;
-    cout<<endl;
-    cout<<"==================================="<<endl;
 }

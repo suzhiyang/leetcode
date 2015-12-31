@@ -1,109 +1,59 @@
-#include <iostream>
-
-using namespace std;
-
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
-};
-
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-
 class Solution {
 public:
-    ListNode *partition(ListNode *head, int x) {
-        if (head == NULL) return head;
-        ListNode *ppart1tail, *pcurrent, *ppart2head, *ppart2prev;
-        pcurrent = head;
-        ppart2head = NULL;
-        ppart1tail = NULL;
-        ppart2prev = NULL;
-        while(pcurrent != NULL)
+    ListNode* partition(ListNode* head, int x) {
+        ListNode d1(0), d2(0);
+        ListNode *p1 = &d1, *p2 = &d2;
+        while(head != NULL)
         {
-            ListNode *ptemp = pcurrent->next;
-            pcurrent->next = NULL;
-            if (pcurrent->val < x)
+            if (head->val < x)
             {
-                if (ppart1tail == NULL)
-                {
-                    ppart1tail = pcurrent;
-                    head = pcurrent;
-                }
-                else
-                {
-                    ppart1tail->next = pcurrent;
-                    ppart1tail = pcurrent;
-                }
+                p1->next = head;
+                p1 = head;
             }
-            else if (ppart2head == NULL)
+            else
             {
-                ppart2head = pcurrent;
-                ppart2prev = pcurrent;
+                p2->next = head;
+                p2 = head;
             }
-            else if (ppart2prev != NULL)
-            {
-                ppart2prev->next = pcurrent;
-                ppart2prev = pcurrent;
-            }
-            pcurrent = ptemp;
+            head = head->next;
         }
-        if (ppart1tail != NULL) ppart1tail->next = ppart2head;
-        return head;
+        p2->next = NULL;
+        p1->next = d2.next;
+        return d1.next;
     }
 };
 
-void PrintList(ListNode *head)
-{
-    ListNode *p = head;
-    while(p != NULL)
-    {
-        cout<<p->val<<",";
-        p = p->next;
-    }
-    cout<<endl;
-}
-
-int main()
-{
-    ListNode *head = new ListNode(1);
-    head->next = new ListNode(3);
-    head->next->next = new ListNode(2);
-    head->next->next->next = new ListNode(4);
-    PrintList(head);
-
-    Solution s;
-    head = s.partition(head, 2);
-    PrintList(head);
-
-    head = new ListNode(1);
-    head->next = new ListNode(4);
-    head->next->next = new ListNode(3);
-    head->next->next->next = new ListNode(2);
-    head->next->next->next->next = new ListNode(5);
-    head->next->next->next->next->next = new ListNode(2);
-    PrintList(head);
-    head = s.partition(head, 3);
-    PrintList(head);
-
-    head = new ListNode(1);
-    PrintList(head);
-    head = s.partition(head, 1);
-    PrintList(head);
-
-    head = new ListNode(1);
-    head->next = new ListNode(2);
-    head->next->next = new ListNode(3);
-    PrintList(head);
-    head = s.partition(head, 4);
-    PrintList(head);
-
-    return 0;
-}
+// class Solution {
+// public:
+//     ListNode* partition(ListNode* head, int x) {
+//         ListNode dummy(0);
+//         dummy.next = head;
+//         ListNode *prev = &dummy, *ins = &dummy, *p = head, *tmp;
+//         while(p != NULL)
+//         {
+//             if (p->val < x)
+//             {
+//                 if (prev != ins)
+//                 {
+//                     prev->next = p->next;
+//                     tmp = ins->next;
+//                     ins->next = p;
+//                     p->next = tmp;
+//                     p = prev->next;
+//                 }
+//                 else
+//                 {
+//                     prev = prev->next;
+//                     p = p->next;
+//                 }
+//                 ins = ins->next;
+//             }
+//             else
+//             {
+//                 prev = p;
+//                 p = p->next;
+//             }
+//         }
+//         return dummy.next;
+//     }
+// };

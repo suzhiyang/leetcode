@@ -1,45 +1,38 @@
-#include <iostream>
 #include <vector>
-
+#include <iostream>
 using namespace std;
 
 class Solution {
 public:
-    void buildheap(vector<int> &a)
+    int findk(vector<int> &nums, int s, int e, int k)
     {
-        int i;
-        for (i = a.size() / 2; i >= 0; --i)
-            heapify(a, i, a.size());
-    }
-
-    void heapify(vector<int> &a, int s, int n)
-    {
-        int i, l = 2 * s + 1, r = 2 * s + 2, m = s, t;
-        if (l < n && a[m] < a[l]) m = l;
-        if (r < n && a[m] < a[r]) m = r;
-        if (m != s)
+        if (s == e) return nums[s];
+        int l = s, r = e - 1;
+        while (l < r)
         {
-            swap(a[m], a[s]);
-            heapify(a, m, n);
+            while(l < r && nums[l] <= nums[e]) ++l;
+            while(l < r && nums[r] > nums[e]) --r;
+            if (l < r) swap(nums[l], nums[r]);
         }
+        if (nums[l] > nums[e]) swap(nums[l], nums[e]);
+        else l = e;
+        if (l == k) return nums[l];
+        else if (l < k) return findk(nums, l + 1, e, k);
+        else return findk(nums, s, l - 1, k);
     }
     
-    int findKthLargest(vector<int> &nums, int k) {
-        int i, t;
-        buildheap(nums);
-        for (i = 0; i < k; ++i)
-        {
-            heapify(nums, 0, nums.size() - i);
-            swap(nums[0], nums[nums.size() - 1 - i]);
-        }
-        return nums[nums.size() - i];
+    int findKthLargest(vector<int>& nums, int k) {
+        return findk(nums, 0, nums.size() - 1, nums.size() - k);
     }
 };
 
 int main()
 {
-    int a[] = {3,2,1,5,6,4};
-    vector<int> v(a, a + 4);
-    Solution s;
-    cout<<s.findKthLargest(v, 2)<<endl;
+    int a[] = {3,1,2,4,5,6};
+    vector<int> v;
+    for (int i = 1; i <= 4; ++i)
+    {
+        v.assign(a, a + 4);
+        cout<<Solution().findKthLargest(v, i)<<endl;
+    }
 }

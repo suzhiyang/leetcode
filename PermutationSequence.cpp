@@ -1,102 +1,85 @@
 #include <iostream>
-#include <vector>
-#include <string>
+#include <list>
 #include <algorithm>
-
+#include <cstring>
+#include <string>
 using namespace std;
-
-
-void dfs(vector<string> &r, string &cur, int index, int n)
-{
-    if (index == n)
-    {
-        r.push_back(cur);
-        return;
-    }
-    int i, j;
-    for (i = 1; i <= n; ++i)
-    {
-        bool exist = false;
-        for (j = 0; j < cur.size(); ++j)
-            if (cur[j] - '0' == i) {exist = true; break;}
-        if (exist == false)
-        {
-            string next = cur + (char)(i + '0');
-            dfs(r, next, index + 1, n);
-        }
-    }
-}
-
-void permutation(int n)
-{
-    vector<string> r;
-    string cur;
-    dfs(r, cur, 0, n);
-    int i;
-    cout<<r.size()<<endl;
-    for (i = 0; i < r.size(); ++i)
-    {
-        cout<<i+1<<" "<<r[i]<<endl;
-    }
-}
 
 class Solution {
 public:
-    int getn(int *a, int n)
+    list<int> l;
+    int f[10];
+    string core(int n, int k)
     {
-        int i, c = 0;
-        for (i = 0; i < 10; ++i)
+        string r;
+        if (n == 1) r = r + char(l.front() + '0');
+        else
         {
-            c += a[i];
-            if (c > n) {a[i] = 0;return i + 1;}
+            int c = (k - 1) / f[n - 1], t;
+            list<int>::iterator it = l.begin();
+            advance(it, c);
+            t = *it;
+            l.erase(it);
+            r = r + char(t + '0') + core(n - 1, k - c * f[n - 1]);
         }
+        return r;
     }
     
     string getPermutation(int n, int k) {
-        if (n == 1) return "1";
-        int f[10], i, c, b;
+        int i;
         f[0] = 1;
-        for (i = 1; i < 10; ++i)
-            f[i] = f[i - 1] * i;
-        string str;
-        int a[10];
-        for (i = 0; i < 10; ++i) a[i] = 1;
-        --k;
         for (i = 1; i <= n; ++i)
         {
-            c = k / f[n - i];
-            k = k % f[n - i];
-            b = getn(a, c);
-//             cout<<c<<" "<<k<<" "<<b<<endl;
-//             for (int j = 0; j < n; ++j) cout<<a[j]<<" ";
-//             cout<<endl;
-            str += (char)(b + '0');
+            f[i] = f[i - 1] * i;
+            l.push_back(i);
         }
-        return str;
+        return core(n, k);
     }
 };
 
+// class Solution {
+// public:
+//     int f[10], s[10];
+//     string get(int n, int k)
+//     {
+//         int i, c, t;
+//         string r;
+//         if (n == 1)
+//         {
+//             for (i = 1; i <= 9; ++i)
+//                 if (s[i]) {r = r + char(i + '0'); break;}
+//         }
+//         else
+//         {
+//             c = (k - 1) / f[n - 1];
+//             t = 0;
+//             for (i = 1; i <= 9; ++i)
+//             {
+//                 if (s[i]) ++t;
+//                 if (t > c) break;
+//             }
+//             s[i] = 0;
+//             r = r + char(i + '0') + get(n - 1, k - c * f[n - 1]);
+//         }
+//         return r;
+//     }
+    
+//     string getPermutation(int n, int k) {
+//         int i;
+//         f[0] = 1;
+//         memset(s, 0, sizeof(s));
+//         for (i = 1; i <= n; ++i)
+//         {
+//             s[i] = 1;
+//             f[i] = f[i - 1] * i;
+//         }
+//         return get(n, k);
+//     }
+// };
+
 int main()
 {
-    Solution s;
-//     cout<<s.getPermutation(2, 1)<<endl;
-//     cout<<s.getPermutation(3, 1)<<endl;
-//     cout<<s.getPermutation(3, 2)<<endl;
-//     cout<<s.getPermutation(3, 3)<<endl;
-//     cout<<s.getPermutation(3, 4)<<endl;
-//     cout<<s.getPermutation(3, 5)<<endl;
-//     cout<<s.getPermutation(3, 6)<<endl;
-//     cout<<endl;
-    cout<<s.getPermutation(4, 10)<<endl;
-    cout<<s.getPermutation(4, 1)<<endl;
-    cout<<s.getPermutation(4, 2)<<endl;
-    cout<<s.getPermutation(4, 3)<<endl;
-    cout<<s.getPermutation(4, 4)<<endl;
-    cout<<s.getPermutation(4, 5)<<endl;
-    cout<<s.getPermutation(4, 6)<<endl;
-    cout<<s.getPermutation(4, 7)<<endl;
-    cout<<s.getPermutation(9, 306490)<<endl;
-//     cout<<s.getPermutation(9, 353955)<<endl;
-//    permutation(3);
-//    permutation(4);
+    int i;
+    for (i = 1; i <= 6; ++i)
+        cout<<Solution().getPermutation(3, i)<<endl;
 }

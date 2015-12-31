@@ -1,37 +1,32 @@
-#include <iostream>
 #include <string>
 #include <vector>
-#include <map>
+#include <iostream>
+#include <cstring>
 
 using namespace std;
 
+int h[1024 * 1024 + 1];
+
 class Solution {
 public:
-    int tobits(const string &s)
-    {   // A:00, C:01, G:10, T:11
-        int i, r = 0;
-        map<char, int> m;
-        m['A'] = 0;
-        m['C'] = 1;
-        m['G'] = 2;
-        m['T'] = 3;
-        for(i = 0; i < s.size(); ++i)
-            r = (r | m[s[i]]) << 2;
-        return r;
-    }
-
     vector<string> findRepeatedDnaSequences(string s) {
         vector<string> r;
-        string str;
-        int i, b;
-        map<int, int> hash;
-        map<int, int>::iterator it;
-        for (i = 0; i < int(s.size()) - 9; ++i)
+        memset(h, 0, sizeof(h));
+        if (s.size() <= 10) return r;
+        int i, j;
+        unsigned int t = 0;
+        for (i = 0; i < s.size(); ++i)
         {
-            str = s.substr(i, 10);
-            b = tobits(str);
-            ++hash[b];
-            if (hash[b] == 2) r.push_back(str);
+            if (s[i] == 'A') t = (t << 2);
+            else if (s[i] == 'C') t = (t << 2) | 1;
+            else if (s[i] == 'G') t = (t << 2) | 2;
+            else t = (t << 2) | 3;
+            if (i >= 9)
+            {
+                t = t & (~0u >> 12);
+                if (h[t] == 1) r.push_back(s.substr(i - 9, 10));
+                ++h[t];
+            }
         }
         return r;
     }
@@ -39,12 +34,11 @@ public:
 
 int main()
 {
-    Solution s;    
-    string str;
-    str = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT";
-//    str = "AAAAACCCCC";
-    str = "AAAAAAAAAAA";
-    vector<string> r = s.findRepeatedDnaSequences(str);
+    Solution s;
+    vector<string> r = s.findRepeatedDnaSequences("AAAAAAAAAAAA");
+    r = s.findRepeatedDnaSequences("GAGAGAGAGAG");
+    r = s.findRepeatedDnaSequences("AAAAAAAAAAA");
     for (int i = 0; i < r.size(); ++i)
         cout<<r[i]<<endl;
+    cout<<endl;
 }

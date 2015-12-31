@@ -1,59 +1,37 @@
-#include <iostream>
-#include <queue>
 #include <vector>
+#include <algorithm>
+#include <queue>
+#include "ds.h"
 
 using namespace std;
 
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
-};
-
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-
-class listnodecomp
-{
-public:
-    bool operator()(const ListNode *lhs, const ListNode *rhs) const
-    {
-        return (lhs->val > rhs->val);
-    }
-};
-
 class Solution {
 public:
-    ListNode *mergeKLists(vector<ListNode *> &lists) {
-        priority_queue<ListNode *, vector<ListNode *>, listnodecomp > pq;
-        ListNode *head = new ListNode(0); // NULL pointer for simplicity
-        ListNode *tail = head;
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        priority_queue<pair<int, ListNode *> > pq;
+        ListNode dummy(0), *tail;
+        tail = &dummy;
+        vector<ListNode *> p(lists.size(), NULL);
         int i;
-        for(i = 0; i < lists.size(); ++i)
-            if (lists[i] != NULL) pq.push(lists[i]);
+        for (i = 0; i < lists.size(); ++i)
+        {
+            p[i] = lists[i];
+            if (p[i] != NULL)
+                pq.push(make_pair(-p[i]->val, p[i]));
+        }
         while(!pq.empty())
         {
-            ListNode *p = pq.top();
+            pair<int, ListNode *> t = pq.top();
             pq.pop();
-            if (p->next != NULL) pq.push(p->next);
-            tail->next = p;
-            tail = p;
+            tail->next = t.second;
+            tail = tail->next;
+            if (t.second->next != NULL)
+                pq.push(make_pair(-t.second->next->val, t.second->next));
         }
-        ListNode *h = head->next;
-        delete head;
-        return h;
+        return dummy.next;
     }
 };
 
 int main()
 {
-    Solution s;
-    vector<ListNode *> lists;
-    s.mergeKLists(lists);
 }

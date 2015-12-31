@@ -1,26 +1,12 @@
-#include <iostream>
-
-using namespace std;
-
 class Solution {
 public:
     int trailingZeroes(int n) {
-        int i = n, n5 = 0;
-        while(i != 0)
+        int t = 1, i, r = 0;
+        while(t <= INT_MAX / 5)
         {
-            i /= 5;
-            n5 += i;
+            t *= 5;
+            r += n / t;
         }
-        return n5;
+        return r;
     }
 };
-
-int main()
-{
-    Solution s;
-    cout<<s.trailingZeroes(3)<<endl;
-    cout<<s.trailingZeroes(5)<<endl;
-    cout<<s.trailingZeroes(15)<<endl;
-    cout<<s.trailingZeroes(25)<<endl;
-    cout<<s.trailingZeroes(50)<<endl;
-}

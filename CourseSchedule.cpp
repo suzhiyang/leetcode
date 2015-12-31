@@ -1,47 +1,23 @@
-#include <iostream>
-#include <vector>
-#include <stack>
-
-using namespace std;
-
 class Solution {
 public:
-    bool canFinish(int numCourses, vector<vector<int> > &prerequisites) {
-        int i;
+    bool canFinish(int numCourses, vector<pair<int, int> >& prerequisites) {
+        map<int, vector<int> > g;
         vector<int> in(numCourses, 0);
-        vector<vector<int> > g(numCourses, vector<int>());
-        stack<int> s;
+        int i, j, v = numCourses;
         for (i = 0; i < prerequisites.size(); ++i)
         {
-            g[prerequisites[i][1]].push_back(prerequisites[i][0]);
-            ++in[prerequisites[i][0]];
+            g[prerequisites[i].second].push_back(prerequisites[i].first);
+            ++in[prerequisites[i].first];
         }
-        for (i = 0; i < numCourses; ++i)
-            if (in[i] == 0) s.push(i);
-        int n = numCourses;
-        while(!s.empty())
+        while(v--)
         {
-            int t = s.top();
-            s.pop();
-            --n;
-            for (i = 0; i < g[t].size(); ++i)
-            {
-                if (--in[g[t][i]] == 0)
-                    s.push(g[t][i]);
-            }
+            for (i = 0; i < numCourses; ++i)
+                if (in[i] == 0) break;
+            if (i == numCourses) return false;
+            for (j = 0; j < g[i].size(); ++j)
+                --in[g[i][j]];
+            in[i] = -1;
         }
-        if (n > 0) return false;
         return true;
     }
 };
-
-int main()
-{
-    Solution s;
-    vector<vector<int> > p;
-    vector<int> v;
-    cout<<s.canFinish(1, p)<<endl;
-    v.push_back(1); v.push_back(0);
-    p.push_back(v);
-    cout<<s.canFinish(2, p)<<endl;
-}

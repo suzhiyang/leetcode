@@ -1,18 +1,10 @@
-#include <iostream>
-#include <string>
-#include <cstring>
-
-using namespace std;
-
 class TrieNode {
 public:
-    TrieNode *child[26];
-    int val;
-public:
     // Initialize your data structure here.
-    TrieNode(): val(0) {
-        for (int i = 0; i < 26; ++i)
-            child[i] = NULL;
+    bool isleaf;
+    TrieNode *p[26];
+    TrieNode() : isleaf(false) {
+        memset(p, 0, sizeof(p));
     }
 };
 
@@ -23,31 +15,28 @@ public:
     }
 
     // Inserts a word into the trie.
-    void insert(string s) {
+    void insert(string word) {
         int i;
         TrieNode *cur = root;
-        for (i = 0; i < s.size(); ++i)
+        for (i = 0; i < word.size(); ++i)
         {
-            if (cur->child[s[i] - 'a'] == NULL)
-            {
-                cur->child[s[i] - 'a'] = new TrieNode();
-            }
-            cur = cur->child[s[i] - 'a'];
+            if (cur->p[word[i] - 'a'] == NULL)
+                cur->p[word[i] - 'a'] = new TrieNode();
+            cur = cur->p[word[i] - 'a'];
         }
-        ++cur->val;
+        cur->isleaf = true;
     }
 
     // Returns if the word is in the trie.
-    bool search(string key) {
+    bool search(string word) {
         int i;
         TrieNode *cur = root;
-        for (i = 0; i < key.size(); ++i)
+        for (i = 0; i < word.size(); ++i)
         {
-            if (cur->child[key[i] - 'a'] == NULL) return false;
-            cur = cur->child[key[i] - 'a'];
+            if (cur->p[word[i] - 'a'] == NULL) return false;
+            cur = cur->p[word[i] - 'a'];
         }
-        if (cur->val > 0) return true;
-        else return false;
+        return cur->isleaf;
     }
 
     // Returns if there is any word in the trie
@@ -57,8 +46,8 @@ public:
         TrieNode *cur = root;
         for (i = 0; i < prefix.size(); ++i)
         {
-            if (cur->child[prefix[i] - 'a'] == NULL) return false;
-            cur = cur->child[prefix[i] - 'a'];
+            if (cur->p[prefix[i] - 'a'] == NULL) return false;
+            cur = cur->p[prefix[i] - 'a'];
         }
         return true;
     }
@@ -67,15 +56,7 @@ private:
     TrieNode* root;
 };
 
-int main()
-{
-    Trie trie;
-    trie.insert("abc");
-    trie.insert("bat");
-    cout<<trie.search("abcd")<<endl;
-    cout<<trie.search("abc")<<endl;
-    cout<<trie.startsWith("ab")<<endl;
-    cout<<trie.startsWith("ba")<<endl;
-    cout<<trie.startsWith("bc")<<endl;
-    cout<<trie.search("ba")<<endl;
-}
+// Your Trie object will be instantiated and called as such:
+// Trie trie;
+// trie.insert("somestring");
+// trie.search("key");

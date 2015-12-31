@@ -1,41 +1,27 @@
+#include <string>
 #include <iostream>
-#include <cstring>
 
 using namespace std;
 
 class Solution {
 public:
-    char *strStr(char *haystack, char *needle) {
-        if (*needle == NULL) return haystack;
-        char *p = haystack, *pn, *ph;
-        int hlen = strlen(haystack), nlen = strlen(needle);
-        int left = hlen;
-        while(*p != NULL)
+    int strStr(string haystack, string needle) {
+        int i, j;
+        if (haystack.size() < needle.size()) return -1;
+        for (i = 0; i <= haystack.size() - needle.size(); ++i)
         {
-            if (left < nlen) break;
-            ph = p;
-            pn = needle;
-            while(*ph != NULL && *pn != NULL)
-            {
-                if (*ph != *pn) break;
-                ++ph; ++pn;
-            }
-            if (*pn == NULL) return p;
-            ++p;
-            --left;
+            for (j = 0; j < needle.size(); ++j)
+                if (haystack[i + j] != needle[j]) break;
+            if (j == needle.size()) return i;
         }
-        return NULL;
+        return -1;
     }
 };
 
 int main()
 {
     Solution s;
-//    char a[] = "what", b[] = "at";
-//    char a[] = "aaa", b[] = "a";
-//    char a[] = "", b[] = "";
-    char a[] = "kjdfkjd", b[] = "a";
-    char *p = s.strStr(a, b);
-    if (p != NULL) cout<<p<<endl;
-    else cout<<"NULL"<<endl;
+    cout<<s.strStr("aaa","aaaa")<<endl;
+    cout<<s.strStr("","")<<endl;
+    cout<<s.strStr("a","a")<<endl;
 }

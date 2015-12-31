@@ -1,70 +1,119 @@
-#include <iostream>
-#include <vector>
-#include <map>
 #include <string>
+#include <vector>
+#include <iostream>
+#include <map>
 
 using namespace std;
 
 class Solution {
 public:
-    vector<int> findSubstring(string S, vector<string> &L) {
+    vector<int> findSubstring(string s, vector<string>& words) {
+        int l = words[0].size(), i, j, cnt = 0, pos, startpos;
         vector<int> r;
-        int len = L[0].size();
-        int i, j, k, c = 0;
-        string s1, s2;
-        map<string, int> dict, hash;
-        map<string, int>::iterator it1, it2;
-        for (i = 0; i < L.size(); ++i)
-            ++dict[L[i]];
-        for(k = 0; k < len; ++k)
+        if (s.size() < l * words.size()) return r;
+        map<string, int> h, w;
+        for (i = 0; i < words.size(); ++i)
+            ++h[words[i]];
+        for (i = 0; i <= s.size() - l;)
         {
-            for (i = k; i < S.size() - len + 1; i += len)
+            if (cnt == 0) startpos = i;
+            string cur = s.substr(i, l);
+            if (h.find(cur) != h.end())
             {
-                s1 = S.substr(i, len);
-//                cout<<"#"<<s1<<","<<i<<","<<c<<endl;
-                it1 = dict.find(s1);
-                if (it1 != dict.end())
+                ++w[cur]; ++cnt;
+                while (w[cur] > h[cur])
                 {
-                    ++hash[s1];
-                    if (hash[s1] <= dict[s1]) ++c;
-                    else
-                    {
-                        for (j = i - c * len; j < i; j += len)
-                        {
-                            s2 = S.substr(j, len);
-                            --hash[s2];
-                            if (s1 == s2) break;
-                            --c;
-                        }
-                    }
-                    if (c == L.size())
-                        r.push_back(i - (c - 1) * len);
+                    pos = i - (cnt - 1) * l;
+                    string t = s.substr(pos, l);
+                    --w[t]; --cnt;
                 }
-                else {c = 0; hash.clear();}
+                if (cnt == words.size())
+                {
+                    pos = i - l * (cnt - 1);
+                    r.push_back(pos);
+                    i = pos + 1;
+                    cnt = 0; w.clear();
+                }
+                else i += l;
             }
-            c = 0; hash.clear();
+            else
+            {
+                i = startpos + 1;
+                cnt = 0; w.clear();
+            }
         }
         return r;
     }
 };
 
+// class Solution {
+// public:
+//     vector<int> findSubstring(string s, vector<string>& words) {
+//         int l = words[0].size(), i, j;
+//         vector<int> r;
+//         map<string, int> h, w;
+//         if (s.size() < l * words.size()) return r;
+//         for (i = 0; i < words.size(); ++i)
+//             ++h[words[i]];
+//         for (i = 0; i <= s.size() - l * words.size(); ++i)
+//         {
+//             w.clear();
+//             for (j = 0; j < words.size(); ++j)
+//             {
+//                 string cur = s.substr(i + j * l, l);
+//                 if (h.find(cur) != h.end())
+//                 {
+//                     ++w[cur];
+//                     if (w[cur] > h[cur]) break;
+//                 }
+//                 else break;
+//             }
+//             if (j == words.size()) r.push_back(i);
+//         }
+//         return r;
+//     }
+// };
+
 int main()
 {
+    string str;
     Solution s;
-    vector<string> L;
-//     string S = "barfoobarbarfoothefoobarman";
-//     L.push_back("foo");
-//     L.push_back("bar");
-    string S = "barfoothefoobarman";
-    L.push_back("foo");
-    L.push_back("bar");
-//     string S = "aaaaaaaa";
-//     L.push_back("aa");
-//     L.push_back("aa");
-//     L.push_back("aa");
-    vector<int> r = s.findSubstring(S, L);
-    int i;
-    for (i = 0; i < r.size(); ++i)
+    vector<string> words(1, "foo");
+    words.push_back("bar");
+    str = "barfoothefoobarman";
+    vector<int> r = s.findSubstring(str, words);
+    for (int i = 0; i < r.size(); ++i)
+        cout<<r[i]<<",";
+    cout<<endl;
+    
+    words.push_back("bar");
+    str = "barfoothefoobarbarman";
+    r = s.findSubstring(str, words);
+    for (int i = 0; i < r.size(); ++i)
+        cout<<r[i]<<",";
+    cout<<endl;
+    
+    words.push_back("kkk");
+    str = "fookkkkkkbarbarfoobarkkkman";
+    r = s.findSubstring(str, words);
+    for (int i = 0; i < r.size(); ++i)
+        cout<<r[i]<<",";
+    cout<<endl;
+
+    words.clear();
+    words.assign(2, "a");
+    str = "aaa";
+    r = s.findSubstring(str, words);
+    for (int i = 0; i < r.size(); ++i)
+        cout<<r[i]<<",";
+    cout<<endl;
+
+    words.clear();
+    words.assign(2, "ba");
+    words.push_back("ab");
+    str = "ababaab";
+    r = s.findSubstring(str, words);
+    for (int i = 0; i < r.size(); ++i)
         cout<<r[i]<<",";
     cout<<endl;
 }

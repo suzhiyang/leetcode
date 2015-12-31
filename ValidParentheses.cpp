@@ -1,47 +1,31 @@
-#include <iostream>
-#include <stack>
-
-using namespace std;
-
 class Solution {
 public:
     bool isValid(string s) {
-        stack<char> charstack;
+        stack<char> stk;
         int i;
-        for(i = 0; i < s.size(); ++i)
+        for (i = 0; i < s.size(); ++i)
         {
-            switch(s[i])
+            if (s[i] == '(' || s[i] == '[' || s[i] == '{')
+                stk.push(s[i]);
+            else
             {
-                case '(':
-                case '{':
-                case '[':
-                    charstack.push(s[i]);
-                    break;
-                case ')':
-                    if (charstack.size() == 0) return false;
-                    if (charstack.top() == '(')
-                        charstack.pop();
-                    else return false;
-                    break;
-                case ']':
-                    if (charstack.size() == 0) return false;
-                    if (charstack.top() == '[')
-                        charstack.pop();
-                    else return false;
-                    break;
-                case '}':
-                    if (charstack.size() == 0) return false;
-                    if (charstack.top() == '{')
-                        charstack.pop();
-                    else return false;
-                    break;
+                if (stk.empty()) return false;
+                char t = stk.top();
+                stk.pop();
+                switch(s[i])
+                {
+                    case ')':
+                        if (t != '(') return false;
+                        break;
+                    case ']':
+                        if (t != '[') return false;
+                        break;
+                    case '}':
+                        if (t != '{') return false;
+                }
             }
         }
-        if (charstack.size() == 0) return true;
-        return false;
+        if (stk.empty()) return true;
+        else return false;
     }
 };
-
-int main()
-{
-}

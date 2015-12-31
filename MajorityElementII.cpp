@@ -1,32 +1,24 @@
 class Solution {
 public:
     vector<int> majorityElement(vector<int>& nums) {
-        int can1 = 0, can2 = 0, c1 = 0, c2 = 0, i;
-        vector<int> r;
+        int c1 = 0, c2 = 1 , cnt1 = 0, cnt2 = 0, i;
         for (i = 0; i < nums.size(); ++i)
         {
-            if (c1 == 0)
-                can1 = nums[i];
-            else if (c2 == 0)
-                can2 = nums[i];
-            if (nums[i] == can1) ++c1;
-            else if (nums[i] == can2) ++c2;
-            else --c1, --c2;
+            if (c1 == nums[i]) ++cnt1;
+            else if (c2 == nums[i]) ++cnt2;
+            else if (cnt1 == 0) c1 = nums[i], cnt1 = 1;
+            else if (cnt2 == 0) c2 = nums[i], cnt2 = 1;
+            else --cnt1, --cnt2;
         }
-        if (c1 > 0)
+        cnt1 = 0, cnt2 = 0;
+        for (i = 0; i < nums.size(); ++i)
         {
-            c1 = 0;
-            for (i = 0; i < nums.size(); ++i)
-                if (nums[i] == can1) ++c1;
-            if (c1 > nums.size() / 3) r.push_back(can1);
+            if (nums[i] == c1) ++cnt1;
+            else if (nums[i] == c2) ++cnt2;
         }
-        if (c2 > 0)
-        {
-            c2 = 0;
-            for (i = 0; i < nums.size(); ++i)
-                if (nums[i] == can2) ++c1;
-            if (c2 > nums.size() / 3) r.push_back(can2);
-        }
+        vector<int> r;
+        if (cnt1 > nums.size() / 3) r.push_back(c1);
+        if (cnt2 > nums.size() / 3) r.push_back(c2);
         return r;
     }
 };

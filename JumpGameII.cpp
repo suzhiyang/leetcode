@@ -1,15 +1,15 @@
 class Solution {
 public:
-    int jump(int A[], int n) {
-        int maxcover = 0, i, last = 0, step = 0;
-        for (i = 0; i < n; ++i)
+    int jump(vector<int>& nums) {
+        int maxreach = 0, curreach = 0, i, step = 0;
+        for (i = 0; i < nums.size() - 1; ++i)
         {
-             if (i > last)
-             {
-                 ++step;
-                 last = maxcover;
-             }
-             maxcover = max(maxcover, A[i] + i);
+            curreach = max(curreach, i + nums[i]);
+            if (i == maxreach)
+            {
+                ++step;
+                maxreach = curreach;
+            }
         }
         return step;
     }
